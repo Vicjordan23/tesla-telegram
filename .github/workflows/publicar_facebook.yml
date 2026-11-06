@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Publicar el accesorio de esta franja
         env:
-          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_ID: me
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           VENTANA: "09:00-23:30"
         run: python3 publicar_facebook.py
