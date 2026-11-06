@@ -26,8 +26,8 @@ AVISO = (
     "🚗⚡ <b>Accesorios Tesla Model 3 y Model Y</b>\n\n"
     "Cada 30 minutos, un accesorio con muy buenas valoraciones en Amazon.es, "
     "solo para los modelos actuales (Model 3 Highland y Model Y Juniper).\n\n"
-    "<i>Como afiliado de Amazon obtengo ingresos por las compras adscritas. "
-    "El precio para ti no cambia.</i>"
+    "<i>En calidad de Afiliado de Amazon, obtengo ingresos por las compras adscritas "
+    "que cumplen los requisitos. El precio para ti no cambia.</i>"
 )
 
 
