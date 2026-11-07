@@ -106,8 +106,16 @@ def main():
     if not usuario:  # con un token de pagina, la cuenta de Instagram vinculada se averigua sola
         r = llamar("me", {"fields": "instagram_business_account"}, token, "GET")
         usuario = (r.get("instagram_business_account") or {}).get("id", "")
+        if not usuario:  # token de usuario: buscar entre sus paginas la que tenga Instagram vinculado
+            paginas = llamar("me/accounts", {"fields": "name,instagram_business_account,access_token"}, token, "GET")
+            for pg in paginas.get("data", []):
+                if pg.get("instagram_business_account"):
+                    usuario = pg["instagram_business_account"]["id"]
+                    token = pg.get("access_token") or token
+                    break
         if not usuario:
-            sys.exit(f"La pagina no tiene Instagram profesional vinculado (o falta permiso): {r}")
+            sys.exit("Sin Instagram profesional vinculado, o al token le faltan los permisos "
+                     f"instagram_basic / instagram_content_publish / pages_show_list. Respuesta: {r}")
     hijos = []
     for url in imagenes:
         r = llamar(f"{usuario}/media", {"image_url": url, "is_carousel_item": "true"}, token)
