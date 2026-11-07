@@ -1,37 +1,322 @@
 [
-  {"asin": "B0GY6GB73J", "emoji": "🖥️", "titulo": "Protector de pantalla mate Spigen EZ Fit (15,4\")", "descripcion": "Cristal templado antirreflejos con bandeja de alineación para ponerlo recto a la primera, sin burbujas. Reduce huellas y brillos en la pantalla central.", "modelos": "Model 3 2024-2026 y Model Y 2025-2026", "pausado": false},
-  {"asin": "B0FC21DNGX", "emoji": "🖥️", "titulo": "Protector de pantalla mate para la pantalla central", "descripcion": "Alternativa de cristal templado con acabado mate: menos reflejos y menos marcas de dedos.", "modelos": "Model 3 Highland 2024-2026 y Model Y Juniper 2025", "pausado": false},
-  {"asin": "B0CLGNW253", "emoji": "📺", "titulo": "Protector para la pantalla trasera de 8\"", "descripcion": "Para proteger la pantalla de los pasajeros de atrás de arañazos y de las manos de los peques.", "modelos": "Model Y Juniper 2025-2026 y Model 3 2024-2025", "pausado": false},
-  {"asin": "B0D5M2GVDK", "emoji": "📦", "titulo": "Organizador de consola central con flocado", "descripcion": "Caja con compartimentos y forro flocado para tener ordenado el hueco de la consola: sin ruidos de objetos sueltos y todo a mano.", "modelos": "Model Y 2025-2026 y Model 3 2024-2026", "pausado": false},
-  {"asin": "B0FLRDQYV3", "emoji": "📱", "titulo": "Soporte de móvil MagSafe Spigen", "descripcion": "Soporte magnético que se engancha a la rejilla de ventilación. Cómodo para tener el móvil a la vista sin tocar la pantalla.", "modelos": "Model Y Juniper y Model 3 Highland", "pausado": false},
-  {"asin": "B0DLLN9BJX", "emoji": "📱", "titulo": "Soporte de móvil de aleación VION", "descripcion": "Soporte metálico de acabado premium, firme y bien integrado en el salpicadero. Muy bien valorado por su estabilidad.", "modelos": "Model 3 Highland 2024-2026", "pausado": false},
-  {"asin": "B0DY7Z1J52", "emoji": "🧽", "titulo": "Alfombrillas completas 3W para Model Y Juniper", "descripcion": "Juego a medida de TPE que incluye también la del maletero. Aguantan barro, arena y líquidos y se limpian con agua.", "modelos": "Model Y Juniper 2025-2026", "pausado": false},
-  {"asin": "B0F2HLHSY8", "emoji": "🧽", "titulo": "Set de 10 piezas 3W: alfombrillas y bandeja de maletero", "descripcion": "Pack completo para el interior y el maletero, a medida. Ojo: no vale para el New Standard 2026.", "modelos": "Model Y Juniper 2025-2026 (no New Standard)", "pausado": false},
-  {"asin": "B0F2SDBMYK", "emoji": "🧳", "titulo": "Alfombrilla de maletero 3W", "descripcion": "Protege el maletero de golpes, humedad y suciedad. Material resistente y fácil de lavar.", "modelos": "Model Y Juniper 2025-2026", "pausado": false},
-  {"asin": "B0DZX8CFQQ", "emoji": "🛞", "titulo": "Guardabarros Wigoo", "descripcion": "Evitan que el barro y las piedras salpiquen los bajos y la pintura de las puertas. Muy bien valorados por el ajuste.", "modelos": "Model Y Juniper 2025-2026", "pausado": false},
-  {"asin": "B08M3TXN81", "emoji": "🔧", "titulo": "Almohadillas de goma para el gato (juego de 4)", "descripcion": "Se colocan en los puntos de elevación para levantar el coche en el taller o en casa sin dañar la batería ni el chasis. Imprescindibles si vas a usar gato.", "modelos": "Model 3 y Model Y (2013-2026)", "pausado": false},
-  {"asin": "B0D9GWPM4V", "emoji": "🦶", "titulo": "Pedales de aluminio TPARTS", "descripcion": "Juego de pedales con acabado de aluminio y antideslizante: más agarre y un toque deportivo en el interior.", "modelos": "Model 3 Highland 2024+ y Model Y", "pausado": false},
-  {"asin": "B0F13HSQSX", "emoji": "🔌", "titulo": "Cargador de coche multipuerto", "descripcion": "Varios puertos para cargar móvil y portátil en el coche, con cable retráctil. Práctico en viajes largos con varias personas.", "modelos": "Model 3 Highland 2024-2026 y Model Y Juniper 2025-2026", "pausado": false},
-  {"asin": "B09XF6HC5N", "emoji": "👜", "titulo": "Bolsa para el cable de carga", "descripcion": "Funda para guardar y transportar el cable del coche eléctrico limpio y ordenado en el maletero.", "modelos": "Cualquier cable de carga de coche eléctrico", "pausado": false},
-  {"asin": "B0CJD762WD", "emoji": "🔑", "titulo": "Llavero con tarjetero Spigen (pack de 2)", "descripcion": "Para llevar la tarjeta llave de Tesla siempre contigo sin que se pierda ni se raye.", "modelos": "Model 3 / 3 Highland y Model Y / Y Juniper", "pausado": false},
-  {"asin": "B0CGMHHYHT", "emoji": "🚪", "titulo": "Cubierta de cerradura y bisagra de puerta Spigen", "descripcion": "Protege la zona de la cerradura y la bisagra de la puerta y le da un acabado más cuidado.", "modelos": "Model 3 y Model Y Juniper 2026", "pausado": false},
-  {"asin": "B0GD6R5CT8", "emoji": "🛡️", "titulo": "Funda exterior de 10 capas para Model Y", "descripcion": "Cubre el coche entero contra sol, lluvia y polvo cuando duerme en la calle.", "modelos": "Model Y 2020-2026", "pausado": false},
-  {"asin": "B0BVFMB71Z", "emoji": "🛡️", "titulo": "Funda exterior para Model Y", "descripcion": "Otra opción de funda completa para proteger la pintura del sol, la lluvia y la suciedad.", "modelos": "Model Y 2020-2026", "pausado": false},
-  {"asin": "B0C7D4PBS8", "emoji": "🧳", "titulo": "Alfombrilla trasera de maletero Spigen", "descripcion": "Alfombrilla a medida para el maletero: protege de golpes, humedad y suciedad cuando cargas maletas o la compra.", "modelos": "Model 3 Highland 2024+", "pausado": false},
-  {"asin": "B0CP99P4JN", "emoji": "🧳", "titulo": "Alfombrilla de maletero 3W para Model 3", "descripcion": "Material resistente y fácil de limpiar, a medida del maletero del Model 3 renovado.", "modelos": "Model 3 Highland 2024-2026", "pausado": false},
-  {"asin": "B0FCJC4QW4", "emoji": "🔋", "titulo": "Cubierta para la almohadilla de carga inalámbrica Spigen", "descripcion": "Tapa la zona de carga inalámbrica de la consola para que no entren migas ni objetos pequeños y quede más limpia.", "modelos": "Model Y Juniper", "pausado": false},
-  {"asin": "B0GL33V2XB", "emoji": "☀️", "titulo": "Parasol de techo VION", "descripcion": "Oscurece el techo de cristal y reduce el calor y la luz directa dentro del coche en verano.", "modelos": "Model Y 2025-2026 (Juniper)", "pausado": false},
-  {"asin": "B0GKJHR7F3", "emoji": "🛞", "titulo": "Tapones de válvula magnéticos Spigen (pack de 4)", "descripcion": "Tapones de TPU antiarañazos que se colocan y quitan con imán: un detalle práctico y de diseño en las llantas.", "modelos": "Model 3, Y, X y S", "pausado": false},
-  {"asin": "B0G5X7W6F6", "emoji": "⚡", "titulo": "Carga ultrarrápida 45 W con dos cables USB-C retráctiles", "descripcion": "Dos cables USB-C retráctiles para cargar rápido móviles y tablets sin cables sueltos por el coche.", "modelos": "Model 3 Highland 2024-2026 y Model Y Juniper 2025-2026", "pausado": false},
-  {"asin": "B0CR5WQY5D", "emoji": "🔌", "titulo": "Hub USB 4 en 1 para la guantera", "descripcion": "Convierte la guantera en una estación con puertos USB: ideal para dashcam, pendrive y otros accesorios.", "modelos": "Model 3 Highland 2024-26 y Model Y Juniper 2025-26", "pausado": false},
-  {"asin": "B0CTCK8B94", "emoji": "📲", "titulo": "Tapete de carga inalámbrica para la consola central", "descripcion": "Almohadilla de carga inalámbrica para la consola: dejas el móvil encima y se carga sin cables.", "modelos": "Model 3 2024+", "pausado": false},
-  {"asin": "B0DPS6DVN6", "emoji": "🏠", "titulo": "Soporte de pared para el cable de carga Tipo 2", "descripcion": "Cuelga el cable de carga en el garaje, ordenado y fuera del suelo.", "modelos": "Cables con conector Tipo 2 (el de Tesla en Europa)", "pausado": false},
-  {"asin": "B0CKSG4G98", "emoji": "🔌", "titulo": "Cable de carga Tipo 2 de 22 kW y 5 m", "descripcion": "Cable de repuesto o de reserva para cargar en puntos públicos o en casa con conector Tipo 2.", "modelos": "Coches con conector Tipo 2 (Tesla en Europa)", "pausado": false},
-  {"asin": "B0C1YKQYQ9", "emoji": "💨", "titulo": "Inflador digital de neumáticos AstroAI", "descripcion": "Compresor de 12 V con pantalla digital para ajustar la presión de las ruedas en casa o de viaje.", "modelos": "Cualquier coche con válvula estándar", "pausado": false},
-  {"asin": "B0D7N5CB6X", "emoji": "📦", "titulo": "Organizador oculto bajo la pantalla Spigen", "descripcion": "Un compartimento discreto bajo la pantalla para dejar llaves, gafas o monedas sin que se vean.", "modelos": "Model Y Juniper y Model 3 Highland 2024-2026", "pausado": false},
-  {"asin": "B0CRZH3XFS", "emoji": "📦", "titulo": "Bandeja organizadora antideslizante para la consola Spigen", "descripcion": "Bandeja a medida con base antideslizante para que los objetos no se muevan en las curvas.", "modelos": "Model 3 Highland y Model Y Juniper", "pausado": false},
-  {"asin": "B0CQZ616TV", "emoji": "📦", "titulo": "Bandeja organizadora con reposabrazos Spigen", "descripcion": "Organiza la consola central y mejora el reposabrazos con una sola pieza a medida.", "modelos": "Model 3 Highland y Model Y Juniper", "pausado": false},
-  {"asin": "B0FVJW98P7", "emoji": "🧰", "titulo": "Organizador de frunk con divisores Spigen (pack de 2)", "descripcion": "Divisores para el maletero delantero: separa bolsas, cables y pequeñas cosas para que no rueden.", "modelos": "Model Y Juniper 2025-2026", "pausado": false},
-  {"asin": "B0FBHD7RVT", "emoji": "🛡️", "titulo": "Protector de umbral del maletero Spigen", "descripcion": "Protege el borde del maletero de arañazos al meter y sacar maletas y bultos.", "modelos": "Model Y Juniper 2025-2026", "pausado": false},
-  {"asin": "B0GKJZGGWZ", "emoji": "📦", "titulo": "Extensión del organizador de consola Spigen", "descripcion": "Amplía el organizador de la consola central con una pieza antideslizante a medida.", "modelos": "Model Y Juniper 2025-2026", "pausado": false}
+ {
+  "asin": "B0GY6GB73J",
+  "emoji": "🖥️",
+  "titulo": "Protector de pantalla mate Spigen EZ Fit (15,4\")",
+  "descripcion": "Cristal templado antirreflejos con bandeja de alineación para ponerlo recto a la primera, sin burbujas. Reduce huellas y brillos en la pantalla central.",
+  "modelos": "Model 3 2024-2026 y Model Y 2025-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0FC21DNGX",
+  "emoji": "🖥️",
+  "titulo": "Protector de pantalla mate para la pantalla central",
+  "descripcion": "Alternativa de cristal templado con acabado mate: menos reflejos y menos marcas de dedos.",
+  "modelos": "Model 3 Highland 2024-2026 y Model Y Juniper 2025",
+  "pausado": false
+ },
+ {
+  "asin": "B0CLGNW253",
+  "emoji": "📺",
+  "titulo": "Protector para la pantalla trasera de 8\"",
+  "descripcion": "Para proteger la pantalla de los pasajeros de atrás de arañazos y de las manos de los peques.",
+  "modelos": "Model Y Juniper 2025-2026 y Model 3 2024-2025",
+  "pausado": false
+ },
+ {
+  "asin": "B0D5M2GVDK",
+  "emoji": "📦",
+  "titulo": "Organizador de consola central con flocado",
+  "descripcion": "Caja con compartimentos y forro flocado para tener ordenado el hueco de la consola: sin ruidos de objetos sueltos y todo a mano.",
+  "modelos": "Model Y 2025-2026 y Model 3 2024-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0FLRDQYV3",
+  "emoji": "📱",
+  "titulo": "Soporte de móvil MagSafe Spigen",
+  "descripcion": "Soporte magnético que se engancha a la rejilla de ventilación. Cómodo para tener el móvil a la vista sin tocar la pantalla.",
+  "modelos": "Model Y Juniper y Model 3 Highland",
+  "pausado": false
+ },
+ {
+  "asin": "B0DLLN9BJX",
+  "emoji": "📱",
+  "titulo": "Soporte de móvil de aleación VION",
+  "descripcion": "Soporte metálico de acabado premium, firme y bien integrado en el salpicadero. Muy bien valorado por su estabilidad.",
+  "modelos": "Model 3 Highland 2024-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0DY7Z1J52",
+  "emoji": "🧽",
+  "titulo": "Alfombrillas completas 3W para Model Y Juniper",
+  "descripcion": "Juego a medida de TPE que incluye también la del maletero. Aguantan barro, arena y líquidos y se limpian con agua.",
+  "modelos": "Model Y Juniper 2025-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0F2HLHSY8",
+  "emoji": "🧽",
+  "titulo": "Set de 10 piezas 3W: alfombrillas y bandeja de maletero",
+  "descripcion": "Pack completo para el interior y el maletero, a medida. Ojo: no vale para el New Standard 2026.",
+  "modelos": "Model Y Juniper 2025-2026 (no New Standard)",
+  "pausado": false
+ },
+ {
+  "asin": "B0F2SDBMYK",
+  "emoji": "🧳",
+  "titulo": "Alfombrilla de maletero 3W",
+  "descripcion": "Protege el maletero de golpes, humedad y suciedad. Material resistente y fácil de lavar.",
+  "modelos": "Model Y Juniper 2025-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0DZX8CFQQ",
+  "emoji": "🛞",
+  "titulo": "Guardabarros Wigoo",
+  "descripcion": "Evitan que el barro y las piedras salpiquen los bajos y la pintura de las puertas. Muy bien valorados por el ajuste.",
+  "modelos": "Model Y Juniper 2025-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B08M3TXN81",
+  "emoji": "🔧",
+  "titulo": "Almohadillas de goma para el gato (juego de 4)",
+  "descripcion": "Se colocan en los puntos de elevación para levantar el coche en el taller o en casa sin dañar la batería ni el chasis. Imprescindibles si vas a usar gato.",
+  "modelos": "Model 3 y Model Y (2013-2026)",
+  "pausado": false
+ },
+ {
+  "asin": "B0D9GWPM4V",
+  "emoji": "🦶",
+  "titulo": "Pedales de aluminio TPARTS",
+  "descripcion": "Juego de pedales con acabado de aluminio y antideslizante: más agarre y un toque deportivo en el interior.",
+  "modelos": "Model 3 Highland 2024+ y Model Y",
+  "pausado": false
+ },
+ {
+  "asin": "B0F13HSQSX",
+  "emoji": "🔌",
+  "titulo": "Cargador de coche multipuerto",
+  "descripcion": "Varios puertos para cargar móvil y portátil en el coche, con cable retráctil. Práctico en viajes largos con varias personas.",
+  "modelos": "Model 3 Highland 2024-2026 y Model Y Juniper 2025-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B09XF6HC5N",
+  "emoji": "👜",
+  "titulo": "Bolsa para el cable de carga",
+  "descripcion": "Funda para guardar y transportar el cable del coche eléctrico limpio y ordenado en el maletero.",
+  "modelos": "Cualquier cable de carga de coche eléctrico",
+  "pausado": false
+ },
+ {
+  "asin": "B0CJD762WD",
+  "emoji": "🔑",
+  "titulo": "Llavero con tarjetero Spigen (pack de 2)",
+  "descripcion": "Para llevar la tarjeta llave de Tesla siempre contigo sin que se pierda ni se raye.",
+  "modelos": "Model 3 / 3 Highland y Model Y / Y Juniper",
+  "pausado": false
+ },
+ {
+  "asin": "B0CGMHHYHT",
+  "emoji": "🚪",
+  "titulo": "Cubierta de cerradura y bisagra de puerta Spigen",
+  "descripcion": "Protege la zona de la cerradura y la bisagra de la puerta y le da un acabado más cuidado.",
+  "modelos": "Model 3 y Model Y Juniper 2026",
+  "pausado": true
+ },
+ {
+  "asin": "B0GD6R5CT8",
+  "emoji": "🛡️",
+  "titulo": "Funda exterior de 10 capas para Model Y",
+  "descripcion": "Cubre el coche entero contra sol, lluvia y polvo cuando duerme en la calle.",
+  "modelos": "Model Y 2020-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0BVFMB71Z",
+  "emoji": "🛡️",
+  "titulo": "Funda exterior para Model Y",
+  "descripcion": "Otra opción de funda completa para proteger la pintura del sol, la lluvia y la suciedad.",
+  "modelos": "Model Y 2020-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0C7D4PBS8",
+  "emoji": "🧳",
+  "titulo": "Alfombrilla trasera de maletero Spigen",
+  "descripcion": "Alfombrilla a medida para el maletero: protege de golpes, humedad y suciedad cuando cargas maletas o la compra.",
+  "modelos": "Model 3 Highland 2024+",
+  "pausado": false
+ },
+ {
+  "asin": "B0CP99P4JN",
+  "emoji": "🧳",
+  "titulo": "Alfombrilla de maletero 3W para Model 3",
+  "descripcion": "Material resistente y fácil de limpiar, a medida del maletero del Model 3 renovado.",
+  "modelos": "Model 3 Highland 2024-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0FCJC4QW4",
+  "emoji": "🔋",
+  "titulo": "Cubierta para la almohadilla de carga inalámbrica Spigen",
+  "descripcion": "Tapa la zona de carga inalámbrica de la consola para que no entren migas ni objetos pequeños y quede más limpia.",
+  "modelos": "Model Y Juniper",
+  "pausado": false
+ },
+ {
+  "asin": "B0GL33V2XB",
+  "emoji": "☀️",
+  "titulo": "Parasol de techo VION",
+  "descripcion": "Oscurece el techo de cristal y reduce el calor y la luz directa dentro del coche en verano.",
+  "modelos": "Model Y 2025-2026 (Juniper)",
+  "pausado": false
+ },
+ {
+  "asin": "B0GKJHR7F3",
+  "emoji": "🛞",
+  "titulo": "Tapones de válvula magnéticos Spigen (pack de 4)",
+  "descripcion": "Tapones de TPU antiarañazos que se colocan y quitan con imán: un detalle práctico y de diseño en las llantas.",
+  "modelos": "Model 3, Y, X y S",
+  "pausado": false
+ },
+ {
+  "asin": "B0G5X7W6F6",
+  "emoji": "⚡",
+  "titulo": "Carga ultrarrápida 45 W con dos cables USB-C retráctiles",
+  "descripcion": "Dos cables USB-C retráctiles para cargar rápido móviles y tablets sin cables sueltos por el coche.",
+  "modelos": "Model 3 Highland 2024-2026 y Model Y Juniper 2025-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0CR5WQY5D",
+  "emoji": "🔌",
+  "titulo": "Hub USB 4 en 1 para la guantera",
+  "descripcion": "Convierte la guantera en una estación con puertos USB: ideal para dashcam, pendrive y otros accesorios.",
+  "modelos": "Model 3 Highland 2024-26 y Model Y Juniper 2025-26",
+  "pausado": false
+ },
+ {
+  "asin": "B0CTCK8B94",
+  "emoji": "📲",
+  "titulo": "Tapete de carga inalámbrica para la consola central",
+  "descripcion": "Almohadilla de carga inalámbrica para la consola: dejas el móvil encima y se carga sin cables.",
+  "modelos": "Model 3 2024+",
+  "pausado": false
+ },
+ {
+  "asin": "B0DPS6DVN6",
+  "emoji": "🏠",
+  "titulo": "Soporte de pared para el cable de carga Tipo 2",
+  "descripcion": "Cuelga el cable de carga en el garaje, ordenado y fuera del suelo.",
+  "modelos": "Cables con conector Tipo 2 (el de Tesla en Europa)",
+  "pausado": false
+ },
+ {
+  "asin": "B0CKSG4G98",
+  "emoji": "🔌",
+  "titulo": "Cable de carga Tipo 2 de 22 kW y 5 m",
+  "descripcion": "Cable de repuesto o de reserva para cargar en puntos públicos o en casa con conector Tipo 2.",
+  "modelos": "Coches con conector Tipo 2 (Tesla en Europa)",
+  "pausado": false
+ },
+ {
+  "asin": "B0C1YKQYQ9",
+  "emoji": "💨",
+  "titulo": "Inflador digital de neumáticos AstroAI",
+  "descripcion": "Compresor de 12 V con pantalla digital para ajustar la presión de las ruedas en casa o de viaje.",
+  "modelos": "Cualquier coche con válvula estándar",
+  "pausado": false
+ },
+ {
+  "asin": "B0D7N5CB6X",
+  "emoji": "📦",
+  "titulo": "Organizador oculto bajo la pantalla Spigen",
+  "descripcion": "Un compartimento discreto bajo la pantalla para dejar llaves, gafas o monedas sin que se vean.",
+  "modelos": "Model Y Juniper y Model 3 Highland 2024-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0CRZH3XFS",
+  "emoji": "📦",
+  "titulo": "Bandeja organizadora antideslizante para la consola Spigen",
+  "descripcion": "Bandeja a medida con base antideslizante para que los objetos no se muevan en las curvas.",
+  "modelos": "Model 3 Highland y Model Y Juniper",
+  "pausado": false
+ },
+ {
+  "asin": "B0CQZ616TV",
+  "emoji": "📦",
+  "titulo": "Bandeja organizadora con reposabrazos Spigen",
+  "descripcion": "Organiza la consola central y mejora el reposabrazos con una sola pieza a medida.",
+  "modelos": "Model 3 Highland y Model Y Juniper",
+  "pausado": false
+ },
+ {
+  "asin": "B0FVJW98P7",
+  "emoji": "🧰",
+  "titulo": "Organizador de frunk con divisores Spigen (pack de 2)",
+  "descripcion": "Divisores para el maletero delantero: separa bolsas, cables y pequeñas cosas para que no rueden.",
+  "modelos": "Model Y Juniper 2025-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0FBHD7RVT",
+  "emoji": "🛡️",
+  "titulo": "Protector de umbral del maletero Spigen",
+  "descripcion": "Protege el borde del maletero de arañazos al meter y sacar maletas y bultos.",
+  "modelos": "Model Y Juniper 2025-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0GKJZGGWZ",
+  "emoji": "📦",
+  "titulo": "Extensión del organizador de consola Spigen",
+  "descripcion": "Amplía el organizador de la consola central con una pieza antideslizante a medida.",
+  "modelos": "Model Y Juniper 2025-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0DPKT81FZ",
+  "emoji": "🗄️",
+  "titulo": "Organizador de consola central Wigoo",
+  "descripcion": "Organizador con compartimento frontal deslizante para almacenamiento oculto. Los compradores destacan que encaja perfecto y parece de fábrica.",
+  "modelos": "Model 3 y Model Y 2025-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0DSVFMKFN",
+  "emoji": "📱",
+  "titulo": "Soporte de móvil magnético MagSafe UGREEN para Tesla",
+  "descripcion": "Soporte magnético robusto y estable con gran sujeción, fácil de instalar en la pantalla.",
+  "modelos": "Tesla (comprueba el ajuste en la ficha; no apto para pantallas gruesas)",
+  "pausado": false
+ },
+ {
+  "asin": "B0DGTD26JQ",
+  "emoji": "🩷",
+  "titulo": "Alfombrilla de silicona antideslizante para la consola central (frani)",
+  "descripcion": "Alfombrilla de silicona para la consola central que permite cargar el móvil sin problema.",
+  "modelos": "Model 3 Highland 2024-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0DQH3R6X8",
+  "emoji": "🌬️",
+  "titulo": "Fundas para las rejillas de admisión de aire bajo el asiento",
+  "descripcion": "Pack de 2 fundas con velcro y malla que evitan que se cuele suciedad en las rejillas bajo el asiento.",
+  "modelos": "Model 3 y Model Y",
+  "pausado": false
+ },
+ {
+  "asin": "B0F1YNG1NZ",
+  "emoji": "🧰",
+  "titulo": "Pack de 5 accesorios de organización para el interior",
+  "descripcion": "Organizador de consola, bandeja de silicona, caja de almacenamiento, caja oculta y soporte para bebidas.",
+  "modelos": "Model Y 2025-2026",
+  "pausado": false
+ }
 ]
