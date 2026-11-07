@@ -25,7 +25,7 @@ from datetime import datetime
 from pathlib import Path
 
 AQUI = Path(__file__).resolve().parent
-TAG = "freidoras002-21"
+TAG = "teslaaccesorios-21"
 CANAL = "https://t.me/teslaaccesorios"
 API = "https://graph.facebook.com/v21.0"
 

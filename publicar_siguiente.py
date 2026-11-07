@@ -21,7 +21,7 @@ from datetime import datetime
 from pathlib import Path
 
 AQUI = Path(__file__).resolve().parent
-TAG = "freidoras002-21"
+TAG = "teslaaccesorios-21"
 FACEBOOK = "https://www.facebook.com/profile.php?id=61596316649956"
 AVISO = (
     "🚗⚡ <b>Accesorios Tesla Model 3 y Model Y</b>\n\n"
