@@ -99,10 +99,15 @@ def main():
     if "--prueba" in args:
         print(texto, "\n\nIMAGENES:", *imagenes, sep="\n")
         return
-    usuario = os.environ.get("IG_USER_ID", "")
     token = os.environ.get("IG_TOKEN") or os.environ.get("FB_PAGE_TOKEN", "")
-    if not usuario or not token:
-        sys.exit("Faltan IG_USER_ID o IG_TOKEN")
+    if not token:
+        sys.exit("Falta IG_TOKEN o FB_PAGE_TOKEN")
+    usuario = os.environ.get("IG_USER_ID", "")
+    if not usuario:  # con un token de pagina, la cuenta de Instagram vinculada se averigua sola
+        r = llamar("me", {"fields": "instagram_business_account"}, token, "GET")
+        usuario = (r.get("instagram_business_account") or {}).get("id", "")
+        if not usuario:
+            sys.exit(f"La pagina no tiene Instagram profesional vinculado (o falta permiso): {r}")
     hijos = []
     for url in imagenes:
         r = llamar(f"{usuario}/media", {"image_url": url, "is_carousel_item": "true"}, token)
