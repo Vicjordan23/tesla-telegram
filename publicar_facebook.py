@@ -44,16 +44,24 @@ def dentro_de_ventana(texto):
 
 def elegir(productos):
     asins = sorted(p["asin"] for p in productos)
-    random.Random(2027).shuffle(asins)
-    return asins[int(time.time() // 3600) % len(asins)]
+    # Misma semilla y misma franja de 30 min que publicar_siguiente.py (Telegram):
+    # asi Facebook y Telegram publican el mismo producto a la vez.
+    random.Random(2026).shuffle(asins)
+    return asins[int(time.time() // 1800) % len(asins)]
 
 
 def construir(p):
     url = f"https://www.amazon.es/dp/{p['asin']}?tag={TAG}"
+    try:  # resumen de lo que dicen los compradores en Amazon (opiniones.json, solo hechos leidos en la ficha)
+        opinion = json.loads((AQUI / "opiniones.json").read_text(encoding="utf-8")).get(p["asin"], "")
+    except Exception:
+        opinion = ""
+    bloque = f"💬 Opiniones de compradores en Amazon: {opinion}\n\n" if opinion else ""
     texto = (
         f"{p.get('emoji', '🔥')} {p['titulo']}\n\n"
         f"{p['descripcion']}\n\n"
         f"✅ {p['modelos']}\n\n"
+        f"{bloque}"
         f"Enlace de afiliado de Amazon: a ti no te cuesta nada más.\n"
         f"Más accesorios cada 30 minutos en Telegram: {CANAL}"
     )

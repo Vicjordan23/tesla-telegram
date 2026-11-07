@@ -22,6 +22,7 @@ from pathlib import Path
 
 AQUI = Path(__file__).resolve().parent
 TAG = "freidoras002-21"
+FACEBOOK = "https://www.facebook.com/profile.php?id=61596316649956"
 AVISO = (
     "🚗⚡ <b>Accesorios Tesla Model 3 y Model Y</b>\n\n"
     "Cada 30 minutos, un accesorio con muy buenas valoraciones en Amazon.es, "
@@ -76,7 +77,10 @@ def enviar(token, chat, texto, url):
         "text": texto,
         "parse_mode": "HTML",
         "link_preview_options": {"url": url, "prefer_large_media": True, "show_above_text": True},
-        "reply_markup": {"inline_keyboard": [[{"text": "🛒 Ver en Amazon", "url": url}]]},
+        "reply_markup": {"inline_keyboard": [
+            [{"text": "🛒 Ver en Amazon", "url": url}],
+            [{"text": "📘 Síguenos en Facebook", "url": FACEBOOK}],
+        ]},
     }
     req = urllib.request.Request(
         f"https://api.telegram.org/bot{token}/sendMessage",
