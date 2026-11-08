@@ -1,1 +1,16 @@
-{"name":"Publicar en Facebook","on":{"workflow_dispatch":{}},"jobs":{"publicar":{"runs-on":"ubuntu-latest","timeout-minutes":3,"steps":[{"uses":"actions/checkout@v4"},{"name":"Publicar el accesorio de esta franja","env":{"FB_PAGE_ID":"me","FB_PAGE_TOKEN":"${{ secrets.FB_PAGE_TOKEN }}","VENTANA":"08:00-23:30"},"run":"python3 publicar_facebook.py"}]}}}
+name: Publicar en Facebook
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publicar el accesorio de esta franja
+        env:
+          FB_PAGE_ID: me
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+        run: python3 publicar_facebook.py
