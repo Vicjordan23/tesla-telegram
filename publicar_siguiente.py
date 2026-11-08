@@ -23,7 +23,6 @@ from pathlib import Path
 AQUI = Path(__file__).resolve().parent
 TAG = "teslaaccesorios-21"
 FACEBOOK = "https://www.facebook.com/profile.php?id=61596316649956"
-WEB = "https://vicjordan23.github.io/tesla-tarjetas"
 AVISO = (
     "🚗⚡ <b>Accesorios Tesla Model 3 y Model Y</b>\n\n"
     "Cada 30 minutos, un accesorio con muy buenas valoraciones en Amazon.es, "
@@ -64,23 +63,20 @@ def url_producto(asin):
 
 def construir(p):
     url = url_producto(p["asin"])
-    ficha = f"{WEB}/{p['asin']}.html"
     texto = (
         f"{p.get('emoji', '🔥')} <b>{html.escape(p['titulo'])}</b>\n\n"
         f"{html.escape(p['descripcion'])}\n\n"
-        f"✅ {html.escape(p['modelos'])}\n\n"
-        f'📄 <a href="{ficha}">Ficha completa con opiniones</a>'
+        f"✅ {html.escape(p['modelos'])}"
     )
-    return texto, url, ficha
+    return texto, url
 
 
-def enviar(token, chat, texto, url, ficha=None):
-    # La vista previa usa la ficha de la web (tiene og:image); el boton sigue yendo a Amazon.
+def enviar(token, chat, texto, url):
     cuerpo = {
         "chat_id": chat,
         "text": texto,
         "parse_mode": "HTML",
-        "link_preview_options": {"url": ficha or url, "prefer_large_media": True, "show_above_text": True},
+        "link_preview_options": {"url": url, "prefer_large_media": True, "show_above_text": True},
         "reply_markup": {"inline_keyboard": [
             [{"text": "🛒 Ver en Amazon", "url": url}],
             [{"text": "📘 Síguenos en Facebook", "url": FACEBOOK}],
@@ -149,16 +145,16 @@ def main():
     else:
         asin, nuevo_estado, f_estado = siguiente(productos)
     p = next(x for x in productos if x["asin"] == asin)
-    texto, url, ficha = construir(p)
+    texto, url = construir(p)
 
     if "--prueba" in args:
         print(texto)
-        print("\nBOTON ->", url, "\nVISTA PREVIA ->", ficha)
+        print("\nBOTON ->", url)
         return
 
     if not token or not chat:
         sys.exit("Falta TELEGRAM_BOT_TOKEN o TELEGRAM_CHAT_ID en .env")
-    res = enviar(token, chat, texto, url, ficha)
+    res = enviar(token, chat, texto, url)
     if res.get("ok"):
         if not sin_estado:
             f_estado.write_text(json.dumps(nuevo_estado), encoding="utf-8")
