@@ -3,8 +3,8 @@
 
 Pensado para GitHub Actions (sin archivos de estado): el producto depende de la hora,
 asi que cada franja horaria toca uno distinto y no se repite hasta acabar la vuelta.
-El enlace de Amazon va en el texto y el parametro "link" apunta a la ficha de la web
-(tarjeta con foto), asi la vista previa muestra imagen.
+El enlace de Amazon va en el parametro "link" (tarjeta con foto), no en el texto,
+por lo que el tag de afiliado no se ve escrito en la publicacion.
 
 Variables: FB_PAGE_ID, FB_PAGE_TOKEN (secretos), VENTANA (opcional, "09:00-23:30").
 
@@ -27,7 +27,6 @@ from pathlib import Path
 AQUI = Path(__file__).resolve().parent
 TAG = "teslaaccesorios-21"
 CANAL = "https://t.me/teslaaccesorios"
-WEB = "https://vicjordan23.github.io/tesla-tarjetas"
 API = "https://graph.facebook.com/v21.0"
 
 
@@ -58,17 +57,15 @@ def construir(p):
     except Exception:
         opinion = ""
     bloque = f"💬 Opiniones de compradores en Amazon: {opinion}\n\n" if opinion else ""
-    ficha = f"{WEB}/{p['asin']}.html"
     texto = (
         f"{p.get('emoji', '🔥')} {p['titulo']}\n\n"
         f"{p['descripcion']}\n\n"
         f"✅ {p['modelos']}\n\n"
         f"{bloque}"
-        f"🛒 Ver en Amazon: {url}\n"
-        f"(Enlace de afiliado de Amazon: a ti no te cuesta nada más.)\n"
+        f"Enlace de afiliado de Amazon: a ti no te cuesta nada más.\n"
         f"Más accesorios cada 30 minutos en Telegram: {CANAL}"
     )
-    return texto, ficha  # la tarjeta con foto sale de la ficha de la web (og:image)
+    return texto, url
 
 
 def main():
