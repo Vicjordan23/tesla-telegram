@@ -686,5 +686,173 @@
   "descripcion": "Tres piezas de organización para la consola central.",
   "modelos": "Model Y Juniper y Model 3 Highland",
   "pausado": false
+ },
+ {
+  "asin": "B0CN2Q246Y",
+  "emoji": "🔌",
+  "titulo": "Cable de carga Tipo 2 de 22 kW y 5 metros GONEO",
+  "descripcion": "Cable de carga Modo 3 trifásico de 32 A para conectar el coche a un punto de recarga.",
+  "modelos": "Coches con conector Tipo 2 (el de Tesla en Europa)",
+  "pausado": false
+ },
+ {
+  "asin": "B0CRR369BM",
+  "emoji": "🔌",
+  "titulo": "Cable de carga Tipo 2 Ezgogo de 5 metros",
+  "descripcion": "Cable de carga EV de 32 A y 22 kW, trifásico, Modo 3.",
+  "modelos": "Coches con conector Tipo 2 (el de Tesla en Europa)",
+  "pausado": false
+ },
+ {
+  "asin": "B0BNBR336V",
+  "emoji": "🔌",
+  "titulo": "Cable de carga LAPP Mobility Tipo 2 de 22 kW",
+  "descripcion": "Cable de carga trifásico de 32 A de LAPP Mobility.",
+  "modelos": "Coches con conector Tipo 2 (el de Tesla en Europa)",
+  "pausado": false
+ },
+ {
+  "asin": "B0CKSPYNT5",
+  "emoji": "🔌",
+  "titulo": "Cable de carga bokman Tipo 2 de 11 kW y 5 metros",
+  "descripcion": "Cable de carga Tipo 2 de 11 kW para puntos de recarga.",
+  "modelos": "Coches con conector Tipo 2 (el de Tesla en Europa)",
+  "pausado": false
+ },
+ {
+  "asin": "B0CQLZ3CGB",
+  "emoji": "🔌",
+  "titulo": "Cargador bokman Tipo 2 de 3,68 kW y 5 metros",
+  "descripcion": "Cargador con enchufe Schuko y cable Tipo 2, para cargar desde una toma doméstica.",
+  "modelos": "Coches con conector Tipo 2 (el de Tesla en Europa)",
+  "pausado": false
+ },
+ {
+  "asin": "B0FPM8BN1F",
+  "emoji": "🔌",
+  "titulo": "Cargador GONEO Schuko a Tipo 2 con cable de 8 metros",
+  "descripcion": "Cargador monofásico de 16 A y 3,68 kW con cable de 8 metros.",
+  "modelos": "Coches con conector Tipo 2 (el de Tesla en Europa)",
+  "pausado": false
+ },
+ {
+  "asin": "B0GJCPPTWN",
+  "emoji": "🔌",
+  "titulo": "Cable de carga Tipo 2 a Schuko de 10 metros",
+  "descripcion": "Cable de 3,7 kW con corriente ajustable de 6 a 16 A.",
+  "modelos": "Coches con conector Tipo 2 (el de Tesla en Europa)",
+  "pausado": false
+ },
+ {
+  "asin": "B0G7XK241Q",
+  "emoji": "🔌",
+  "titulo": "Cargador portátil de 3,7 kW con pantalla LCD y cable de 7 m",
+  "descripcion": "Cargador monofásico de 6 a 16 A con pantalla LCD e IP65.",
+  "modelos": "Coches con conector Tipo 2 (el de Tesla en Europa)",
+  "pausado": false
+ },
+ {
+  "asin": "B0CRK6J1L8",
+  "emoji": "🔌",
+  "titulo": "Adaptador Tipo 2 a Schuko de 16 A",
+  "descripcion": "Adaptador para cargar desde una toma Schuko en una estación de carga.",
+  "modelos": "Coches con conector Tipo 2 (el de Tesla en Europa)",
+  "pausado": false
+ },
+ {
+  "asin": "B09KGW2J62",
+  "emoji": "🧲",
+  "titulo": "Soporte de pared Graft para cable de carga Tipo 2",
+  "descripcion": "Soporte de pared para colgar el cable de carga y tenerlo ordenado.",
+  "modelos": "Coches con conector Tipo 2 (el de Tesla en Europa)",
+  "pausado": false
+ },
+ {
+  "asin": "B0CF8MGM17",
+  "emoji": "🧲",
+  "titulo": "Soporte de pared Tera para conector Tipo 2",
+  "descripcion": "Soporte de pared y portacables para el conector Tipo 2.",
+  "modelos": "Coches con conector Tipo 2 (el de Tesla en Europa)",
+  "pausado": false
+ },
+ {
+  "asin": "B0FT13F3Q7",
+  "emoji": "🧲",
+  "titulo": "Soporte de pared Adiwo para cable de carga Tipo 2",
+  "descripcion": "Soporte de pared para el cable y el conector de carga.",
+  "modelos": "Coches con conector Tipo 2 (el de Tesla en Europa)",
+  "pausado": false
+ },
+ {
+  "asin": "B0BXXBPSK1",
+  "emoji": "🧲",
+  "titulo": "Soporte de pared MCEVKELN para cable de carga",
+  "descripcion": "Organizador de pared para el cable de carga Tipo 2.",
+  "modelos": "Coches con conector Tipo 2 (el de Tesla en Europa)",
+  "pausado": false
+ },
+ {
+  "asin": "B0D19WTR58",
+  "emoji": "📦",
+  "titulo": "Bandeja organizadora de consola Spigen de deslizamiento",
+  "descripcion": "Bandeja Spigen para la consola central con tecnología de deslizamiento.",
+  "modelos": "Model Y Juniper (Premium y Performance 2025-2026) y Model 3 Highland 2024-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0DD5JFFFD",
+  "emoji": "✨",
+  "titulo": "Spigen adhesivos con el logo del emblema trasero",
+  "descripcion": "Adhesivos con el logo para el emblema trasero.",
+  "modelos": "Model 3 Highland 2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0GF49JK87",
+  "emoji": "✨",
+  "titulo": "Spigen emblema delantero con logotipo",
+  "descripcion": "Cubierta con logotipo para el emblema delantero.",
+  "modelos": "Model Y Juniper",
+  "pausado": false
+ },
+ {
+  "asin": "B0FCJT3Z69",
+  "emoji": "📲",
+  "titulo": "Spigen cubierta para la almohadilla de carga inalámbrica",
+  "descripcion": "Cubierta de Spigen para la base de carga inalámbrica del móvil.",
+  "modelos": "Model Y Juniper",
+  "pausado": false
+ },
+ {
+  "asin": "B0F3R8JR5B",
+  "emoji": "🛞",
+  "titulo": "Spigen tapones de válvula magnéticos (pack de 4)",
+  "descripcion": "Tapones de válvula de TPU, magnéticos y antiarañazos, en negro.",
+  "modelos": "Model Y Juniper 2026 y Model 3 2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0CR2VVM6P",
+  "emoji": "📦",
+  "titulo": "Pack de 5 accesorios de organización de consola",
+  "descripcion": "Cinco piezas para ordenar la consola central.",
+  "modelos": "Model 3 2024-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0FLQ76FVW",
+  "emoji": "🧳",
+  "titulo": "Alfombrilla de maletero TPE antideslizante",
+  "descripcion": "Alfombrilla de maletero de TPE antideslizante.",
+  "modelos": "Model Y 2020-2026 (incluido Juniper)",
+  "pausado": false
+ },
+ {
+  "asin": "B0H8SH3FQS",
+  "emoji": "🛞",
+  "titulo": "Juego de 9 piezas de alfombrillas para Model Y Juniper",
+  "descripcion": "Juego de 9 piezas de alfombrillas a medida.",
+  "modelos": "Model Y Juniper 2025-2026",
+  "pausado": false
  }
 ]
