@@ -212,11 +212,20 @@ def main():
     print(f"\nCandidatos antes de filtrar por opiniones: {len(nuevos)}")
     if not nuevos:
         return
-    datos = detalles(token, [n["asin"] for n in nuevos])
+    # La API de Creators no devuelve nota ni n.o de opiniones (comprobado 10/11/2026). Por defecto no se
+    # consulta getItems; la calidad la garantiza el filtro minReviewsRating=4 de la busqueda.
+    datos = detalles(token, [n["asin"] for n in nuevos]) if os.environ.get("USAR_GETITEMS") else {}
     if not datos:
-        print("La API no devuelve nota ni opiniones: NO se anade nada (no se puede garantizar calidad).")
+        nuevos = nuevos[:MAX_NUEVOS]
+        print("Sin datos de opiniones: se confia en el filtro de 4 estrellas de Amazon.")
         for n in nuevos:
-            print(f"  (sin datos) {n['asin']}  {n['titulo']}")
+            print(f"  {n['asin']}  {n['modelos']:35}  {n['titulo']}")
+        if not nuevos or not APLICAR:
+            print("\nModo prueba (APLICAR no activo): no se escribe nada.")
+            return
+        productos.extend(nuevos)
+        ruta.write_text(json.dumps(productos, ensure_ascii=False, indent=1), encoding="utf-8")
+        print(f"productos.json actualizado: {len(productos)} entradas")
         return
     buenos = []
     for n in nuevos:
