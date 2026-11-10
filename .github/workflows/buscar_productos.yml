@@ -1,0 +1,39 @@
+name: Buscar productos nuevos (Creators API)
+
+on:
+  workflow_dispatch:
+    inputs:
+      aplicar:
+        description: "Escribir los productos nuevos en productos.json (si no, solo prueba)"
+        type: boolean
+        default: false
+  schedule:
+    - cron: "0 7 * * 1"          # lunes 07:00 UTC; si GitHub no lo lanza, usar el boton
+
+permissions:
+  contents: write                 # para guardar productos.json
+
+jobs:
+  buscar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Buscar productos Tesla con buenas valoraciones
+        env:
+          CREATORS_API_CREDENTIAL_ID: ${{ secrets.CREATORS_API_CREDENTIAL_ID }}
+          CREATORS_API_CREDENTIAL_SECRET: ${{ secrets.CREATORS_API_CREDENTIAL_SECRET }}
+          APLICAR: ${{ (github.event_name == 'schedule' || inputs.aplicar) && '1' || '' }}
+          MAX_NUEVOS: "12"
+        run: python3 buscar_productos.py
+      - name: Guardar cambios
+        run: |
+          if [ -n "$(git status --porcelain productos.json)" ]; then
+            git config user.name "github-actions"
+            git config user.email "github-actions@users.noreply.github.com"
+            git add productos.json
+            git commit -m "Anadir productos nuevos (Creators API)"
+            git push
+          else
+            echo "Sin cambios en productos.json"
+          fi
