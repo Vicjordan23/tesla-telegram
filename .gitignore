@@ -1,3 +1,4 @@
 .env
 estado.json
 registro.log
+__pycache__/
