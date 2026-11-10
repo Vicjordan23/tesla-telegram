@@ -1,0 +1,18 @@
+name: 5 mensajes diarios para WhatsApp
+
+on:
+  schedule:
+    - cron: "0 6 * * *"       # 06:00 UTC = 07:00/08:00 en Espana
+  workflow_dispatch: {}       # boton "Run workflow" para probar a mano
+
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enviar los 5 mensajes a mi chat privado
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID_PRIVADO: ${{ secrets.TELEGRAM_CHAT_ID_PRIVADO }}
+        run: python3 whatsapp_diario.py
