@@ -27,6 +27,7 @@ MARKET = "www.amazon.es"
 TOKEN_URLS = ["https://api.amazon.co.uk/auth/o2/token", "https://api.amazon.com/auth/o2/token"]
 API = "https://creatorsapi.amazon/catalog/v1/searchItems"
 MAX_NUEVOS = int(os.environ.get("MAX_NUEVOS", "12"))
+CAND_MAX = MAX_NUEVOS * 4  # se recogen mas candidatos porque luego se filtran por opiniones
 APLICAR = os.environ.get("APLICAR", "").lower() in ("1", "true", "yes")
 
 CONSULTAS = [
@@ -43,7 +44,7 @@ CONSULTAS = [
 ACTUAL = re.compile(r"juniper|highland|2025|2026|nuevo|new model", re.I)
 ANTIGUO = re.compile(r"(2017|2018|2019|2020|2021)\s*[-–]\s*(2022|2023)\b")
 EXCLUIR = re.compile(r"juguete|miniatura|escala|1[:/]\d{2}|libro|camiseta|taza|peluche|lego|rc\b|mando a distancia|"
-                     r"model s\b|model x\b|cybertruck|roadster", re.I)
+                     r"model s\b|model x\b|cybertruck|roadster|model\s*y\s*l\b", re.I)
 
 
 def post_json(url, cuerpo, cabeceras):
@@ -100,6 +101,39 @@ def buscar_seguro(token, consulta, pagina):
     return {}
 
 
+GET_ITEMS = "https://creatorsapi.amazon/catalog/v1/getItems"
+MIN_OPINIONES = int(os.environ.get("MIN_OPINIONES", "50"))
+MIN_ESTRELLAS = float(os.environ.get("MIN_ESTRELLAS", "4.3"))
+
+
+def detalles(token, asins):
+    """Pide nota y n.o de opiniones con getItems. Devuelve {asin: (estrellas, opiniones)}.
+    Si la API no da esos datos devuelve {} (y entonces no se anade nada)."""
+    salida = {}
+    for i in range(0, len(asins), 10):
+        lote = asins[i:i + 10]
+        cuerpo = {"itemIds": lote, "partnerTag": TAG, "marketplace": MARKET,
+                  "resources": ["customerReviews.count", "customerReviews.starRating"]}
+        try:
+            r = post_json(GET_ITEMS, cuerpo, {"Authorization": f"Bearer {token}", "x-marketplace": MARKET})
+        except urllib.error.HTTPError as e:
+            print(f"  getItems HTTP {e.code}: {e.read().decode('utf-8', 'replace')[:500]}")
+            time.sleep(1.2)
+            continue
+        time.sleep(1.2)
+        items = (r.get("itemsResult") or {}).get("items") or []
+        if items and not salida:
+            print("  getItems muestra de customerReviews:", json.dumps(items[0].get("customerReviews"))[:300])
+        for it in items:
+            cr = it.get("customerReviews") or {}
+            n = cr.get("count")
+            s = cr.get("starRating")
+            s = s.get("value") if isinstance(s, dict) else s
+            if isinstance(n, (int, float)) and isinstance(s, (int, float)):
+                salida[it.get("asin")] = (float(s), int(n))
+    return salida
+
+
 def en_stock(item):
     ofertas = item.get("offersV2") or {}
     listings = ofertas.get("listings", []) if isinstance(ofertas, dict) else ofertas
@@ -110,6 +144,7 @@ def en_stock(item):
 
 
 def titulo_corto(t):
+    t = re.sub(r"[【】\[\]]", " ", t.split("|")[0])  # quita lo que va tras « | » y los corchetes decorativos
     t = re.sub(r"\s+", " ", t).strip()
     if len(t) <= 95:
         return t
@@ -118,6 +153,13 @@ def titulo_corto(t):
 
 
 def modelos_de(t):
+    base = _modelos_base(t)
+    if re.search(r"(no|not)\s+(es\s+)?(para|for)\s+(el\s+)?(modelo\s+)?(est[aá]ndar|standard)", t, re.I):
+        base += " (no para la versión Standard)"
+    return base
+
+
+def _modelos_base(t):
     j, h = re.search(r"juniper", t, re.I), re.search(r"highland", t, re.I)
     if j and h:
         return "Model Y Juniper y Model 3 Highland"
@@ -143,7 +185,7 @@ def main():
     token = obtener_token()
     nuevos, vistos = [], set()
     for q in CONSULTAS:
-        if len(nuevos) >= MAX_NUEVOS:
+        if len(nuevos) >= CAND_MAX:
             break
         for pagina in (1, 2):
             r = buscar_seguro(token, q, pagina)
@@ -163,13 +205,29 @@ def main():
                     "descripcion": "Accesorio para tu Tesla, bien valorado en Amazon.es (4 estrellas o más).",
                     "modelos": modelos_de(t), "pausado": False, "auto": True,
                 })
-                if len(nuevos) >= MAX_NUEVOS:
+                if len(nuevos) >= CAND_MAX:
                     break
-            if len(items) < 10 or len(nuevos) >= MAX_NUEVOS:
+            if len(items) < 10 or len(nuevos) >= CAND_MAX:
                 break
-    print(f"\nProductos nuevos encontrados: {len(nuevos)}")
+    print(f"\nCandidatos antes de filtrar por opiniones: {len(nuevos)}")
+    if not nuevos:
+        return
+    datos = detalles(token, [n["asin"] for n in nuevos])
+    if not datos:
+        print("La API no devuelve nota ni opiniones: NO se anade nada (no se puede garantizar calidad).")
+        for n in nuevos:
+            print(f"  (sin datos) {n['asin']}  {n['titulo']}")
+        return
+    buenos = []
     for n in nuevos:
-        print(f"  {n['asin']}  {n['modelos']:35}  {n['titulo']}")
+        est, num = datos.get(n["asin"], (0.0, 0))
+        marca = "OK " if est >= MIN_ESTRELLAS and num >= MIN_OPINIONES else "no "
+        print(f"  {marca}{n['asin']}  {est:.1f} estrellas, {num} opiniones  {n['titulo']}")
+        if marca == "OK ":
+            n["descripcion"] = "Accesorio para tu Tesla muy bien valorado por los compradores de Amazon.es."
+            buenos.append(n)
+    nuevos = buenos[:MAX_NUEVOS]
+    print(f"\nProductos nuevos que cumplen (>= {MIN_ESTRELLAS} estrellas y >= {MIN_OPINIONES} opiniones): {len(nuevos)}")
     if not nuevos:
         return
     if not APLICAR:
