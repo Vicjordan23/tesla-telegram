@@ -88,5 +88,155 @@
   "descripcion": "Cargador de coche de 165 W con carga rápida PD 3.1.",
   "modelos": "Comprobar compatibilidad en la ficha antes de activar",
   "pausado": true
+ },
+ {
+  "asin": "JOWUA-INTERIOR-MALETERO-JUNIPER",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/interior-trunk-full-coverage-liner-combo-model-y-2025?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🛡️",
+  "titulo": "Combo de protectores de interior y maletero para Model Y Juniper (Jowua)",
+  "descripcion": "Protectores a medida que cubren el interior y el maletero.",
+  "modelos": "Model Y Juniper 2025+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-PARASOLES-LATERALES-JUNIPER",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/side-rear-liftgate-window-sunshade-for-model-y-2025?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🪟",
+  "titulo": "Parasoles para ventanillas laterales y luneta trasera, Model Y Juniper (Jowua)",
+  "descripcion": "Parasoles para las ventanillas laterales y la luneta trasera que protegen el interior del sol.",
+  "modelos": "Model Y Juniper 2025+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-INTERIOR-ESSENTIALS-JUNIPER",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/jowua-interior-upgrade-set-model-y-juniper-2025?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "✨",
+  "titulo": "Set Premium Interior Essentials para Model Y Juniper (Jowua)",
+  "descripcion": "Conjunto de accesorios para mejorar y organizar el interior.",
+  "modelos": "Model Y Juniper 2025+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-INTERIOR-TODO-EN-UNO-JUNIPER",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/all-in-one-interior-upgrade-set-model-y-juniper-2026?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "✨",
+  "titulo": "Set de mejora interior todo en uno para Model Y Juniper (Jowua)",
+  "descripcion": "Set completo para renovar el interior del coche de una vez.",
+  "modelos": "Model Y Juniper 2025+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-MALETERO-HIGHLAND",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/trunk-combo-model-3-2024-highland?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🧳",
+  "titulo": "Combo de maletero de todo tiempo para Model 3 Highland (Jowua)",
+  "descripcion": "Protectores de todo tiempo para el maletero.",
+  "modelos": "Model 3 Highland 2024+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-PARASOL-MODEL3",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/windshield-sunshade-for-model-3-2024?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "☀️",
+  "titulo": "Parasol de parabrisas para Model 3 (Jowua)",
+  "descripcion": "Protege el salpicadero del sol y mantiene el habitáculo más fresco.",
+  "modelos": "Model 3 (incluido Highland)",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-REPOSABRAZOS-HIGHLAND",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/armrest-organizer-tesla-model-3-highland-3-2024?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🗄️",
+  "titulo": "Organizador de reposabrazos para Model 3 Highland (Jowua)",
+  "descripcion": "Organizador para aprovechar el espacio del reposabrazos.",
+  "modelos": "Model 3 Highland 2024+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-ESTACION-PANTALLA",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/under-screen-invisible-station-model-3-highland-2024-y-juniper-2025?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "📦",
+  "titulo": "Estación invisible bajo la pantalla (Jowua)",
+  "descripcion": "Espacio de almacenamiento bajo la pantalla con luz y puertos de carga, integrado en el interior.",
+  "modelos": "Model 3 2024+ y Model Y 2025+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-HUB-VENTILACION-TRASERA",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/130w-led-hub-for-rear-cabin-vents?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🔌",
+  "titulo": "Hub LED de 130 W para la ventilación trasera (Jowua)",
+  "descripcion": "Hub con luz LED de 130 W para la rejilla de ventilación trasera.",
+  "modelos": "Model 3 Highland 2024+ y Model Y Juniper 2025+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-BANDEJA-PLEGABLE",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/foldable-car-tray?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🍽️",
+  "titulo": "Bandeja plegable para el coche (Jowua)",
+  "descripcion": "Bandeja plegable para usar en el coche.",
+  "modelos": "Pensado para coches Tesla",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-AMBIENTADOR-TESLA",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/car-fragrance-for-tesla?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🌸",
+  "titulo": "Ambientador para Tesla (Jowua)",
+  "descripcion": "Ambientador diseñado para coches Tesla.",
+  "modelos": "Model S, 3, X e Y",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-CAJAS-MALETERO-MODEL-Y",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/trunk-storage-bins-bundle?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "📦",
+  "titulo": "Pack de cajas de almacenamiento para el maletero del Model Y (Jowua)",
+  "descripcion": "Cajas de almacenamiento para mantener ordenado el maletero.",
+  "modelos": "Model Y",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-SOPORTE-360",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/360-multi-function-mount?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "📱",
+  "titulo": "Soporte multifunción giratorio de 360° (Jowua)",
+  "descripcion": "Soporte multifunción de 360° para el coche.",
+  "modelos": "Pensado para coches Tesla",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-TAPONES-VALVULA",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/tire-valve-caps?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🛞",
+  "titulo": "Tapones de válvula para las ruedas (Jowua)",
+  "descripcion": "Tapones de válvula para las ruedas.",
+  "modelos": "Pensado para coches Tesla",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-PINTURA-RETOQUES",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/touch-up-paint?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🎨",
+  "titulo": "Pintura de retoque para pequeños arañazos (Jowua)",
+  "descripcion": "Pintura de retoque con el color del coche para arreglar arañazos pequeños.",
+  "modelos": "Model S, 3, X e Y",
+  "pausado": false
  }
 ]
