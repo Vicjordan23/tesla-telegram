@@ -38,5 +38,55 @@
   "descripcion": "Organizador de consola central con alfombrilla y portavasos; deja todo a mano.",
   "modelos": "Model Y Juniper 2025+ (comprobar compatibilidad en la ficha antes de activar)",
   "pausado": true
+ },
+ {
+  "asin": "JOWUA-PARASOLES-PACK-JUNIPER",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/model-y-ultimate-sunshade-bundle-model-y-2025?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🪟",
+  "titulo": "Pack completo de parasoles para Model Y Juniper (Jowua)",
+  "descripcion": "Conjunto de parasoles para proteger el interior del sol y mantener el coche más fresco.",
+  "modelos": "Model Y Juniper 2025+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-MALETERO-JUNIPER",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/easyshield-waterproof-trunk-liner-model-y?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🧳",
+  "titulo": "Protector de maletero impermeable con funda para los respaldos traseros, Model Y Juniper (Jowua)",
+  "descripcion": "Protector de maletero impermeable más funda para los respaldos de los asientos traseros.",
+  "modelos": "Model Y Juniper 2025+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-SOPORTE-MAGSAFE",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/magsafe-air-vent-car-mount-with-active-cooling?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "📱",
+  "titulo": "Soporte MagSafe con refrigeración activa para la rejilla de ventilación (Jowua)",
+  "descripcion": "Soporte MagSafe para el móvil que se coloca en la rejilla de ventilación, con refrigeración activa.",
+  "modelos": "Model 3 Highland y Model Y Juniper",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-HUB-LED-130W",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/130w-led-hub-reengineered-model-3-highland-model-y-juniper?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🔌",
+  "titulo": "Hub LED de 130 W para Model 3 Highland y Model Y Juniper (Jowua)",
+  "descripcion": "Hub con luz LED para ampliar la carga a bordo, con un acabado integrado en el interior.",
+  "modelos": "Model 3 Highland 2024+ y Model Y Juniper 2025+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-CARGADOR-165W",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/165w-car-charger?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "⚡",
+  "titulo": "Cargador de coche de 165 W con PD 3.1 (Jowua)",
+  "descripcion": "Cargador de coche de 165 W con carga rápida PD 3.1.",
+  "modelos": "Comprobar compatibilidad en la ficha antes de activar",
+  "pausado": true
  }
 ]
