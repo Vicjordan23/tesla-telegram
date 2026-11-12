@@ -238,5 +238,115 @@
   "descripcion": "Pintura de retoque con el color del coche para arreglar arañazos pequeños.",
   "modelos": "Model S, 3, X e Y",
   "pausado": false
+ },
+ {
+  "asin": "JOWUA-PROTECTOR-PANTALLA",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/tempered-glass-screen-protector-for-tesla-model3-2024?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🖥️",
+  "titulo": "Protector de pantalla de cristal templado para Model 3 Highland y Model Y Juniper (Jowua)",
+  "descripcion": "Cristal templado para proteger la pantalla central.",
+  "modelos": "Model 3 Highland 2024+ y Model Y Juniper 2025+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-ALFOMBRILLAS-HIGHLAND",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/all-weather-floor-liners?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🌧️",
+  "titulo": "Alfombrillas de todo tiempo para Model 3 Highland (Jowua)",
+  "descripcion": "Alfombrillas que protegen el suelo del barro, la nieve y el agua.",
+  "modelos": "Model 3 Highland 2024+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-PROTECTOR-MALETERO-HIGHLAND",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/all-weather-trunk-liners-model3?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🧳",
+  "titulo": "Protector de maletero de todo tiempo para Model 3 Highland (Jowua)",
+  "descripcion": "Protector de todo tiempo para el maletero.",
+  "modelos": "Model 3 Highland 2024+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-CONSOLA-HIGHLAND",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/center-console-tray-organizer-new?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🗄️",
+  "titulo": "Set de consola central para Model 3 Highland (Jowua)",
+  "descripcion": "Set organizador para la consola central.",
+  "modelos": "Model 3 Highland 2024+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-CAJA-30L",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/foldable-storage-box?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "📦",
+  "titulo": "Caja de almacenamiento apilable de 30 L para el maletero (Jowua)",
+  "descripcion": "Caja apilable de 30 litros para mantener ordenado el maletero.",
+  "modelos": "Pensado para coches Tesla",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-SOPORTE-REFRIGERADO-UNIVERSAL",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/universal-air-vent-car-mount-with-magsafe?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "📱",
+  "titulo": "Soporte MagSafe universal con refrigeración activa para la rejilla (Jowua)",
+  "descripcion": "Soporte MagSafe para la rejilla de ventilación con refrigeración activa.",
+  "modelos": "Universal",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-SOPORTE-VENTILACION-UNIVERSAL",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/universal-air-vent-car-mount?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "📱",
+  "titulo": "Soporte universal para la rejilla de ventilación (Jowua)",
+  "descripcion": "Soporte para el móvil que se engancha a la rejilla de ventilación.",
+  "modelos": "Universal",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-ANILLO-MAGNETICO",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/universal-magnetic-ring?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🧲",
+  "titulo": "Anillo magnético universal, 2 unidades (Jowua)",
+  "descripcion": "Anillos magnéticos para usar el móvil con soportes magnéticos.",
+  "modelos": "Universal",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-PANOS-MICROFIBRA",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/microfiber-cleaning-cloth-3-pack?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🧽",
+  "titulo": "Paños de microfibra, pack de 3 (Jowua)",
+  "descripcion": "Paños de microfibra para limpiar el interior del coche.",
+  "modelos": "Universal",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-ALMOHADA-CERVICAL",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/car-neck-pillow?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "😴",
+  "titulo": "Almohada cervical para el coche (Jowua)",
+  "descripcion": "Almohada para el cuello para los viajes en coche.",
+  "modelos": "Universal",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-COMPRESOR-100W",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/portable-air-compressor-caps-combo?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🔧",
+  "titulo": "Compresor de aire portátil de 100 W (Jowua)",
+  "descripcion": "Compresor portátil para revisar la presión de las ruedas.",
+  "modelos": "Pensado para coches Tesla",
+  "pausado": false
  }
 ]
