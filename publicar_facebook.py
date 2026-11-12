@@ -51,18 +51,23 @@ def elegir(productos):
 
 
 def construir(p):
-    url = f"https://www.amazon.es/dp/{p['asin']}?tag={TAG}"
+    jowua = p.get("tienda") == "jowua"
+    url = p["url"] if jowua else f"https://www.amazon.es/dp/{p['asin']}?tag={TAG}"
     try:  # resumen de lo que dicen los compradores en Amazon (opiniones.json, solo hechos leidos en la ficha)
         opinion = json.loads((AQUI / "opiniones.json").read_text(encoding="utf-8")).get(p["asin"], "")
     except Exception:
         opinion = ""
-    bloque = f"💬 Opiniones de compradores en Amazon: {opinion}\n\n" if opinion else ""
+    bloque = f"💬 Opiniones de compradores en Amazon: {opinion}\n\n" if opinion and not jowua else ""
+    if jowua:  # tienda Jowua: descuento (sin precios) y aviso de afiliado
+        aviso = "🏷️ 5 % de descuento con el código VICTOR5 (con este enlace se aplica solo).\nEnlace de afiliado de Jowua.\n"
+    else:
+        aviso = "Enlace de afiliado de Amazon: a ti no te cuesta nada más.\n"
     texto = (
         f"{p.get('emoji', '🔥')} {p['titulo']}\n\n"
         f"{p['descripcion']}\n\n"
         f"✅ {p['modelos']}\n\n"
         f"{bloque}"
-        f"Enlace de afiliado de Amazon: a ti no te cuesta nada más.\n"
+        f"{aviso}"
         f"Más accesorios cada 30 minutos en Telegram: {CANAL}"
     )
     return texto, url
@@ -72,7 +77,11 @@ def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     args = set(sys.argv[1:])
-    productos = [p for p in json.loads((AQUI / "productos.json").read_text(encoding="utf-8")) if not p.get("pausado")]
+    productos = json.loads((AQUI / "productos.json").read_text(encoding="utf-8"))
+    extra = AQUI / "productos_jowua.json"  # articulos de Jowua (otra tienda de afiliado)
+    if extra.exists():
+        productos += json.loads(extra.read_text(encoding="utf-8"))
+    productos = [p for p in productos if not p.get("pausado")]
     if "--forzar" not in args and not dentro_de_ventana(os.environ.get("VENTANA", "")):
         print("Fuera de la ventana horaria; no se publica.")
         return

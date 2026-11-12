@@ -1,0 +1,42 @@
+[
+ {
+  "asin": "JOWUA-PARASOL-JUNIPER",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/windshield-sunshade-for-model-y-2025?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "☀️",
+  "titulo": "Parasol de parabrisas para Model Y Juniper (Jowua)",
+  "descripcion": "Protege el salpicadero del sol y mantiene el habitáculo más fresco; además da privacidad cuando el coche está aparcado.",
+  "modelos": "Model Y Juniper 2025+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-ALFOMBRILLAS-JUNIPER",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/all-weather-floor-liners-essentials-modely?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🌧️",
+  "titulo": "Alfombrillas de todo tiempo para Model Y Juniper (Jowua)",
+  "descripcion": "Alfombrillas que protegen el suelo del barro, la nieve y el agua durante todo el año.",
+  "modelos": "Model Y Juniper 2025+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-COMPRESOR-AIRE",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/air-compressor-charging-kit?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🔧",
+  "titulo": "Compresor de aire portátil con kit de carga (Jowua)",
+  "descripcion": "Compresor compacto para revisar y ajustar la presión de las ruedas en cualquier momento, con carga rápida incluida.",
+  "modelos": "Pensado para coches Tesla",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-CONSOLA-JUNIPER",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/led-center-console-combo-tesla-model-y-juniper-2025?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🗄️",
+  "titulo": "Set de consola central con luz LED para Model Y Juniper (Jowua)",
+  "descripcion": "Organizador de consola central con alfombrilla y portavasos; deja todo a mano.",
+  "modelos": "Model Y Juniper 2025+ (comprobar compatibilidad en la ficha antes de activar)",
+  "pausado": true
+ }
+]

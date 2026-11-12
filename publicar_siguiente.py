@@ -61,24 +61,33 @@ def url_producto(asin):
     return f"https://www.amazon.es/dp/{asin}?tag={TAG}"
 
 
+def es_jowua(p):
+    return p.get("tienda") == "jowua"
+
+
 def construir(p):
-    url = url_producto(p["asin"])
+    url = p["url"] if es_jowua(p) else url_producto(p["asin"])
     texto = (
         f"{p.get('emoji', '🔥')} <b>{html.escape(p['titulo'])}</b>\n\n"
         f"{html.escape(p['descripcion'])}\n\n"
         f"✅ {html.escape(p['modelos'])}"
     )
+    if es_jowua(p):  # tienda Jowua: descuento (sin precios) y aviso de afiliado
+        texto += (
+            "\n\n🏷️ 5 % de descuento con el código VICTOR5 (con este enlace se aplica solo)\n"
+            "<i>Enlace de afiliado de Jowua.</i>"
+        )
     return texto, url
 
 
-def enviar(token, chat, texto, url):
+def enviar(token, chat, texto, url, boton="🛒 Ver en Amazon"):
     cuerpo = {
         "chat_id": chat,
         "text": texto,
         "parse_mode": "HTML",
         "link_preview_options": {"url": url, "prefer_large_media": True, "show_above_text": True},
         "reply_markup": {"inline_keyboard": [
-            [{"text": "🛒 Ver en Amazon", "url": url}],
+            [{"text": boton, "url": url}],
             [{"text": "📘 Síguenos en Facebook", "url": FACEBOOK}],
         ]},
     }
@@ -125,6 +134,9 @@ def main():
         if os.environ.get(k):
             env[k] = os.environ[k]
     productos = json.loads((AQUI / "productos.json").read_text(encoding="utf-8"))
+    extra = AQUI / "productos_jowua.json"  # articulos de Jowua (otra tienda de afiliado)
+    if extra.exists():
+        productos += json.loads(extra.read_text(encoding="utf-8"))
     productos = [p for p in productos if not p.get("pausado")]
     token, chat = env.get("TELEGRAM_BOT_TOKEN", ""), env.get("TELEGRAM_CHAT_ID", "")
 
@@ -154,7 +166,7 @@ def main():
 
     if not token or not chat:
         sys.exit("Falta TELEGRAM_BOT_TOKEN o TELEGRAM_CHAT_ID en .env")
-    res = enviar(token, chat, texto, url)
+    res = enviar(token, chat, texto, url, "🛒 Ver en Jowua" if es_jowua(p) else "🛒 Ver en Amazon")
     if res.get("ok"):
         if not sin_estado:
             f_estado.write_text(json.dumps(nuevo_estado), encoding="utf-8")
