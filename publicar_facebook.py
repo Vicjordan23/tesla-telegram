@@ -43,11 +43,16 @@ def dentro_de_ventana(texto):
 
 
 def elegir(productos):
-    asins = sorted(p["asin"] for p in productos)
-    # Misma semilla y misma franja de 30 min que publicar_siguiente.py (Telegram):
-    # asi Facebook y Telegram publican el mismo producto a la vez.
-    random.Random(2026).shuffle(asins)
-    return asins[int(time.time() // 1800) % len(asins)]
+    # Misma logica que publicar_siguiente.py (Telegram): franjas pares = Amazon, impares = Jowua,
+    # cada tienda con su lista barajada (semilla 2026). Telegram y Facebook publican lo mismo a la vez.
+    franja = int(time.time() // 1800)
+    amazon = sorted(p["asin"] for p in productos if p.get("tienda") != "jowua")
+    jowua = sorted(p["asin"] for p in productos if p.get("tienda") == "jowua")
+    lista = amazon if (franja % 2 == 0 or not jowua) else jowua
+    if not lista:
+        lista = jowua or amazon
+    random.Random(2026).shuffle(lista)
+    return lista[(franja // 2) % len(lista)]
 
 
 def construir(p):

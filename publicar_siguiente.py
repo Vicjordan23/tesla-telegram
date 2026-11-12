@@ -103,9 +103,15 @@ def siguiente_sin_estado(productos):
     """Para GitHub Actions (no guarda archivos): el producto depende de la hora.
     Cada franja de 30 min toca el siguiente de una lista barajada con semilla fija,
     asi no se repite hasta completar la vuelta."""
-    asins = sorted(p["asin"] for p in productos)
-    random.Random(2026).shuffle(asins)
-    return asins[int(time.time() // 1800) % len(asins)]
+    # Franjas pares = Amazon, impares = Jowua, cada tienda con su lista barajada (misma logica en Facebook).
+    franja = int(time.time() // 1800)
+    amazon = sorted(p["asin"] for p in productos if p.get("tienda") != "jowua")
+    jowua = sorted(p["asin"] for p in productos if p.get("tienda") == "jowua")
+    lista = amazon if (franja % 2 == 0 or not jowua) else jowua
+    if not lista:
+        lista = jowua or amazon
+    random.Random(2026).shuffle(lista)
+    return lista[(franja // 2) % len(lista)]
 
 
 def siguiente(productos):
