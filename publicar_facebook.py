@@ -59,7 +59,7 @@ def construir(p):
         opinion = ""
     bloque = f"💬 Opiniones de compradores en Amazon: {opinion}\n\n" if opinion and not jowua else ""
     if jowua:  # tienda Jowua: descuento (sin precios) y aviso de afiliado
-        aviso = "🏷️ 5 % de descuento con el código VICTOR5 (con este enlace se aplica solo).\nEnlace de afiliado de Jowua.\n"
+        aviso = "🏷️ 5 % de descuento con el código ACCESORIOSTESLA (con este enlace se aplica solo).\nEnlace de afiliado de Jowua.\n"
     else:
         aviso = "Enlace de afiliado de Amazon: a ti no te cuesta nada más.\n"
     texto = (

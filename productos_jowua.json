@@ -348,5 +348,115 @@
   "descripcion": "Compresor portátil para revisar la presión de las ruedas.",
   "modelos": "Pensado para coches Tesla",
   "pausado": false
+ },
+ {
+  "asin": "JOWUA-HUB-MICROSD",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/3-port-usb-dashcam-hub-microsd-reader?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "💾",
+  "titulo": "Hub de almacenamiento con lector microSD y USB para Tesla (Jowua)",
+  "descripcion": "Hub compacto para la guantera que amplía los puertos de datos del Tesla e incluye lector de tarjetas microSD.",
+  "modelos": "Model 3 Highland 2024+ y Model Y Juniper 2025+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-HUB-SSD-1TB",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/3-port-usb-dashcam-hub-1tb-nvme-ssd?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "💽",
+  "titulo": "SSD de 1 TB con hub de 3 puertos para Tesla (Jowua)",
+  "descripcion": "Hub de 3 puertos para la guantera con SSD de 1 TB: convierte un puerto en tres sin ocupar espacio.",
+  "modelos": "Model 3 Highland 2024+ y Model Y Juniper 2025+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-MANDO-INALAMBRICO",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/multi-device-wireless-controller?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🎮",
+  "titulo": "Mando de juegos para Tesla con carga inalámbrica (Jowua)",
+  "descripcion": "Mando de juegos para la pantalla del Tesla con carga inalámbrica integrada.",
+  "modelos": "Model 3, Model Y, Model S y Model X",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-CABLE-STARLINK",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/starlink-cable-for-cybertruck-model-s-3-x-y?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "📡",
+  "titulo": "Cable USB-C a DC de 3 m para Starlink Mini (Jowua)",
+  "descripcion": "Cable de 3 metros que alimenta tu Starlink Mini directamente desde los puertos USB-C del Tesla.",
+  "modelos": "Model 3, Model Y, Model S, Model X y Cybertruck",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-REJILLAS-ASIENTO",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/rear-under-seat-air-vent-cover?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🌬️",
+  "titulo": "Cubiertas para las rejillas de aire bajo el asiento trasero (Jowua)",
+  "descripcion": "Set de 2 cubiertas a medida para las rejillas de aire situadas bajo el asiento trasero.",
+  "modelos": "Model 3 y Model Y",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-POWER-DOCK",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/power-align-station-combo?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🎧",
+  "titulo": "Power Dock: base de carga de accesorios para Tesla (Jowua)",
+  "descripcion": "Base de carga para los AirPods y otros accesorios diseñada para el Tesla, sin cables sueltos.",
+  "modelos": "Pensado para coches Tesla",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-TECHO-CRISTAL-JUNIPER",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/model-y-glass-roof-sunshade?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "☀️",
+  "titulo": "Parasol para el techo de cristal del Model Y Juniper (Jowua)",
+  "descripcion": "Parasol de malla de alta densidad de doble cara para el techo de cristal, ligero y que ayuda a reducir el calor.",
+  "modelos": "Model Y Juniper 2025+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-TECHO-CRISTAL-HIGHLAND",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/model-3-glass-roof-sunshade-scversion?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "☀️",
+  "titulo": "Parasol para el techo de cristal del Model 3 Highland (Jowua)",
+  "descripcion": "Parasol de malla de alta densidad de doble cara para el techo de cristal, ligero y que ayuda a reducir el calor.",
+  "modelos": "Model 3 Highland 2024+",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-SOPORTE-ASIENTO-MAGNETICO",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/magnetic-car-seat-holder-for-tesla?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🧲",
+  "titulo": "Soporte magnético para el asiento (Jowua)",
+  "descripcion": "Soporte magnético para el asiento del coche, pensado para Tesla.",
+  "modelos": "Model S, Model 3, Model X y Model Y (no compatible con Model Y L Performance)",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-PARAGUAS",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/anti-rebound-inverted-umbrella?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "☂️",
+  "titulo": "Paraguas invertido antirrebote a juego con el color de tu Tesla (Jowua)",
+  "descripcion": "Paraguas invertido de cierre fácil y seguro, con el color a juego de tu Tesla.",
+  "modelos": "Pensado para propietarios de Tesla",
+  "pausado": false
+ },
+ {
+  "asin": "JOWUA-CORREA-EMERGENCIA",
+  "tienda": "jowua",
+  "url": "https://www.jowua-life.com/products/reflective-rear-door-emergency-release-strap?ghref=5866:1343863&discount=accesoriostesla",
+  "emoji": "🚪",
+  "titulo": "Correa reflectante para el desbloqueo de emergencia de la puerta trasera (Jowua)",
+  "descripcion": "Correa reflectante para localizar y accionar con facilidad el desbloqueo de emergencia de la puerta trasera.",
+  "modelos": "Model 3 Highland 2024+ y Model Y",
+  "pausado": false
  }
 ]

@@ -74,7 +74,7 @@ def construir(p):
     )
     if es_jowua(p):  # tienda Jowua: descuento (sin precios) y aviso de afiliado
         texto += (
-            "\n\n🏷️ 5 % de descuento con el código VICTOR5 (con este enlace se aplica solo)\n"
+            "\n\n🏷️ 5 % de descuento con el código ACCESORIOSTESLA (con este enlace se aplica solo)\n"
             "<i>Enlace de afiliado de Jowua.</i>"
         )
     return texto, url
