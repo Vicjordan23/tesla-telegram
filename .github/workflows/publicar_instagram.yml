@@ -5,8 +5,7 @@ on:
 
 jobs:
   publicar:
-    # PAUSADO (09/11/2026, Vic): no publicar tarjetas rojas en Instagram. Quitar la linea "if: false" para reactivar.
-    if: false
+    # Reactivado el 15/11/2026 (Vic): ahora publica la foto real del producto, no tarjetas dibujadas.
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
