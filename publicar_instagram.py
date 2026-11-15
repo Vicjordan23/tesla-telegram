@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Publica en Instagram (@tesla.accesorios) el carrusel del accesorio de la franja actual.
+"""Publica en Instagram (@tesla.accesorios) la FOTO REAL del accesorio de la franja actual.
 
-Mismo producto y misma franja de 30 min que Telegram/Facebook. Las 4 tarjetas JPEG las genera
-tarjetas.py y viven en un repo PUBLICO (Instagram necesita URLs publicas): IMAGENES_URL.
+Misma rotacion que Telegram/Facebook (una tienda por franja de 30 min: Amazon, Jowua, Hansshow, y dentro
+de cada una su lista barajada con semilla 2026), asi que el mismo producto sale en los tres canales.
+La imagen es la foto del producto (imagenes_ig.json: id -> URL publica JPEG). Sin tarjetas dibujadas.
+Si el producto de la franja no tiene imagen conocida, no se publica nada en esa franja.
 
 Secretos (GitHub Actions): IG_USER_ID (id de la cuenta de Instagram profesional) y
-IG_TOKEN (token de pagina/usuario con instagram_content_publish; si falta se usa FB_PAGE_TOKEN).
-Opcional: VENTANA.
+IG_TOKEN (token con instagram_content_publish; si falta se usa FB_PAGE_TOKEN).
+Opcionales: VENTANA ("08:00-23:30"), TIENDAS_IG (p. ej. "jowua,hansshow" para excluir Amazon).
 
 Uso:  python publicar_instagram.py [--prueba] [--forzar]
 """
@@ -23,8 +25,8 @@ from pathlib import Path
 
 AQUI = Path(__file__).resolve().parent
 API = "https://graph.facebook.com/v21.0"
-IMAGENES_URL = os.environ.get("IMAGENES_URL", "https://raw.githubusercontent.com/Vicjordan23/tesla-tarjetas/main")
 CANAL = "t.me/teslaaccesorios"
+TIENDAS = ("amazon", "jowua", "hansshow")  # orden de la rotacion (igual que Telegram y Facebook)
 
 
 def dentro_de_ventana(texto):
@@ -39,23 +41,37 @@ def dentro_de_ventana(texto):
     return ini.strip() <= ahora <= fin.strip()
 
 
+def tienda_de(p):
+    return p.get("tienda", "amazon")
+
+
 def elegir(productos):
-    asins = sorted(p["asin"] for p in productos)
-    random.Random(2026).shuffle(asins)  # misma semilla y franja que Telegram/Facebook
-    return asins[int(time.time() // 1800) % len(asins)]
+    # Identico a publicar_siguiente.py / publicar_facebook.py (no tocar uno sin tocar los otros).
+    franja = int(time.time() // 1800)
+    presentes = [t for t in TIENDAS if any(tienda_de(p) == t for p in productos)]
+    tienda = presentes[franja % len(presentes)]
+    lista = sorted(p["asin"] for p in productos if tienda_de(p) == tienda)
+    random.Random(2026).shuffle(lista)
+    return lista[(franja // len(presentes)) % len(lista)]
 
 
 def leyenda(p):
-    try:
-        opinion = json.loads((AQUI / "opiniones.json").read_text(encoding="utf-8")).get(p["asin"], "")
-    except Exception:
-        opinion = ""
+    tienda = tienda_de(p)
     partes = [f"{p.get('emoji', '🔥')} {p['titulo']}", p["descripcion"], f"✅ {p['modelos']}"]
-    if opinion:
-        partes.append(f"💬 {opinion}")
-    partes.append(f"🛒 Enlace de compra en Amazon en nuestro canal de Telegram: {CANAL} (enlace en la bio). "
+    if tienda == "amazon":
+        try:
+            opinion = json.loads((AQUI / "opiniones.json").read_text(encoding="utf-8")).get(p["asin"], "")
+        except Exception:
+            opinion = ""
+        if opinion:
+            partes.append(f"💬 Opiniones de compradores en Amazon: {opinion}")
+        partes.append("Enlace de afiliado de Amazon: a ti no te cuesta nada más.")
+    elif tienda == "jowua":
+        partes.append("🏷️ 5 % de descuento con el código ACCESORIOSTESLA (con el enlace del canal se aplica solo).")
+    elif tienda == "hansshow":
+        partes.append("🏷️ 20 % de descuento con el código VICTOR al pagar.")
+    partes.append(f"🛒 Enlace de compra en nuestro canal de Telegram: {CANAL} (enlace en la bio). "
                   "Un accesorio nuevo cada 30 minutos.")
-    partes.append("Enlaces de afiliado de Amazon: a ti no te cuesta nada más.")
     partes.append("#tesla #teslamodel3 #teslamodely #accesoriostesla #teslaespaña")
     return "\n\n".join(partes)[:2200]
 
@@ -88,16 +104,32 @@ def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     args = set(sys.argv[1:])
-    productos = [p for p in json.loads((AQUI / "productos.json").read_text(encoding="utf-8")) if not p.get("pausado")]
+    productos = json.loads((AQUI / "productos.json").read_text(encoding="utf-8"))
+    for nombre in ("productos_jowua.json", "productos_hansshow.json"):  # otras tiendas de afiliado
+        extra = AQUI / nombre
+        if extra.exists():
+            productos += json.loads(extra.read_text(encoding="utf-8"))
+    productos = [p for p in productos if not p.get("pausado")]
     if "--forzar" not in args and not dentro_de_ventana(os.environ.get("VENTANA", "")):
         print("Fuera de la ventana horaria; no se publica.")
         return
-    asin = elegir(productos)
+    asin = elegir(productos)  # la rotacion se calcula con TODAS las tiendas para coincidir con Telegram/Facebook
     p = next(x for x in productos if x["asin"] == asin)
-    imagenes = [f"{IMAGENES_URL}/{asin}_{i}.jpg" for i in range(1, 5)]
+    permitidas = [t.strip() for t in os.environ.get("TIENDAS_IG", "").split(",") if t.strip()]
+    if permitidas and tienda_de(p) not in permitidas:
+        print(f"Tienda {tienda_de(p)} excluida de Instagram (TIENDAS_IG); no se publica {asin}.")
+        return
+    try:
+        imagenes = json.loads((AQUI / "imagenes_ig.json").read_text(encoding="utf-8"))
+    except Exception:
+        imagenes = {}
+    imagen = imagenes.get(asin)
+    if not imagen:
+        print(f"Sin imagen del producto para {asin}; no se publica en esta franja.")
+        return
     texto = leyenda(p)
     if "--prueba" in args:
-        print(texto, "\n\nIMAGENES:", *imagenes, sep="\n")
+        print(texto, "\n\nIMAGEN ->", imagen)
         return
     token = os.environ.get("IG_TOKEN") or os.environ.get("FB_PAGE_TOKEN", "")
     if not token:
@@ -116,13 +148,7 @@ def main():
         if not usuario:
             sys.exit("Sin Instagram profesional vinculado, o al token le faltan los permisos "
                      f"instagram_basic / instagram_content_publish / pages_show_list. Respuesta: {r}")
-    hijos = []
-    for url in imagenes:
-        r = llamar(f"{usuario}/media", {"image_url": url, "is_carousel_item": "true"}, token)
-        hijos.append(r["id"])
-    for h in hijos:
-        esperar(h, token)
-    c = llamar(f"{usuario}/media", {"media_type": "CAROUSEL", "children": ",".join(hijos), "caption": texto}, token)
+    c = llamar(f"{usuario}/media", {"image_url": imagen, "caption": texto}, token)
     esperar(c["id"], token)
     pub = llamar(f"{usuario}/media_publish", {"creation_id": c["id"]}, token)
     print("Publicado", asin, pub)
