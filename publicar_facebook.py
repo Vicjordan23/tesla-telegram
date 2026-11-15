@@ -28,6 +28,7 @@ AQUI = Path(__file__).resolve().parent
 TAG = "teslaaccesorios-21"
 CANAL = "https://t.me/teslaaccesorios"
 API = "https://graph.facebook.com/v21.0"
+TIENDAS = ("amazon", "jowua", "hansshow")  # orden de la rotacion: una tienda por franja de 30 min
 
 
 def dentro_de_ventana(texto):
@@ -43,28 +44,33 @@ def dentro_de_ventana(texto):
 
 
 def elegir(productos):
-    # Misma logica que publicar_siguiente.py (Telegram): franjas pares = Amazon, impares = Jowua,
-    # cada tienda con su lista barajada (semilla 2026). Telegram y Facebook publican lo mismo a la vez.
+    # Misma logica que publicar_siguiente.py (Telegram): una tienda por franja (Amazon, Jowua, Hansshow por
+    # turnos = 1/3 cada una), cada una con su lista barajada (semilla 2026). Telegram y Facebook publican lo mismo a la vez.
     franja = int(time.time() // 1800)
-    amazon = sorted(p["asin"] for p in productos if p.get("tienda") != "jowua")
-    jowua = sorted(p["asin"] for p in productos if p.get("tienda") == "jowua")
-    lista = amazon if (franja % 2 == 0 or not jowua) else jowua
-    if not lista:
-        lista = jowua or amazon
+    presentes = [t for t in TIENDAS if any(tienda_de(p) == t for p in productos)]
+    tienda = presentes[franja % len(presentes)]
+    lista = sorted(p["asin"] for p in productos if tienda_de(p) == tienda)
     random.Random(2026).shuffle(lista)
-    return lista[(franja // 2) % len(lista)]
+    return lista[(franja // len(presentes)) % len(lista)]
+
+
+def tienda_de(p):
+    return p.get("tienda", "amazon")
 
 
 def construir(p):
-    jowua = p.get("tienda") == "jowua"
-    url = p["url"] if jowua else f"https://www.amazon.es/dp/{p['asin']}?tag={TAG}"
+    tienda = tienda_de(p)
+    jowua = tienda == "jowua"
+    url = f"https://www.amazon.es/dp/{p['asin']}?tag={TAG}" if tienda == "amazon" else p["url"]
     try:  # resumen de lo que dicen los compradores en Amazon (opiniones.json, solo hechos leidos en la ficha)
         opinion = json.loads((AQUI / "opiniones.json").read_text(encoding="utf-8")).get(p["asin"], "")
     except Exception:
         opinion = ""
-    bloque = f"💬 Opiniones de compradores en Amazon: {opinion}\n\n" if opinion and not jowua else ""
+    bloque = f"💬 Opiniones de compradores en Amazon: {opinion}\n\n" if opinion and tienda == "amazon" else ""
     if jowua:  # tienda Jowua: descuento (sin precios) y aviso de afiliado
         aviso = "🏷️ 5 % de descuento con el código ACCESORIOSTESLA (con este enlace se aplica solo).\n"
+    elif tienda == "hansshow":  # Hansshow: cupon de afiliado de Victor (el enlace lleva su codigo bg_ref)
+        aviso = "🏷️ 20 % de descuento con el código VICTOR al pagar.\n"
     else:
         aviso = "Enlace de afiliado de Amazon: a ti no te cuesta nada más.\n"
     texto = (
@@ -83,9 +89,10 @@ def main():
         sys.stdout.reconfigure(encoding="utf-8")
     args = set(sys.argv[1:])
     productos = json.loads((AQUI / "productos.json").read_text(encoding="utf-8"))
-    extra = AQUI / "productos_jowua.json"  # articulos de Jowua (otra tienda de afiliado)
-    if extra.exists():
-        productos += json.loads(extra.read_text(encoding="utf-8"))
+    for nombre in ("productos_jowua.json", "productos_hansshow.json"):  # otras tiendas de afiliado
+        extra = AQUI / nombre
+        if extra.exists():
+            productos += json.loads(extra.read_text(encoding="utf-8"))
     productos = [p for p in productos if not p.get("pausado")]
     if "--forzar" not in args and not dentro_de_ventana(os.environ.get("VENTANA", "")):
         print("Fuera de la ventana horaria; no se publica.")

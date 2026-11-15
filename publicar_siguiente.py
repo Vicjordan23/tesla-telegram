@@ -61,21 +61,28 @@ def url_producto(asin):
     return f"https://www.amazon.es/dp/{asin}?tag={TAG}"
 
 
-def es_jowua(p):
-    return p.get("tienda") == "jowua"
+TIENDAS = ("amazon", "jowua", "hansshow")  # orden de la rotacion: una tienda por franja de 30 min
+BOTONES = {"amazon": "🛒 Ver en Amazon", "jowua": "🛒 Ver en Jowua", "hansshow": "🛒 Ver en Hansshow"}
+
+
+def tienda_de(p):
+    return p.get("tienda", "amazon")
 
 
 def construir(p):
-    url = p["url"] if es_jowua(p) else url_producto(p["asin"])
+    tienda = tienda_de(p)
+    url = url_producto(p["asin"]) if tienda == "amazon" else p["url"]
     texto = (
         f"{p.get('emoji', '🔥')} <b>{html.escape(p['titulo'])}</b>\n\n"
         f"{html.escape(p['descripcion'])}\n\n"
         f"✅ {html.escape(p['modelos'])}"
     )
-    if es_jowua(p):  # tienda Jowua: descuento (sin precios) y aviso de afiliado
+    if tienda == "jowua":  # tienda Jowua: descuento (sin precios) y aviso de afiliado
         texto += (
             "\n\n🏷️ 5 % de descuento con el código ACCESORIOSTESLA (con este enlace se aplica solo)"
         )
+    elif tienda == "hansshow":  # Hansshow: cupon de afiliado de Victor (el enlace lleva su codigo bg_ref)
+        texto += "\n\n🏷️ 20 % de descuento con el código VICTOR al pagar"
     return texto, url
 
 
@@ -103,15 +110,14 @@ def siguiente_sin_estado(productos):
     """Para GitHub Actions (no guarda archivos): el producto depende de la hora.
     Cada franja de 30 min toca el siguiente de una lista barajada con semilla fija,
     asi no se repite hasta completar la vuelta."""
-    # Franjas pares = Amazon, impares = Jowua, cada tienda con su lista barajada (misma logica en Facebook).
+    # Cada franja de 30 min toca una tienda (Amazon, Jowua, Hansshow, por turnos = 1/3 cada una) y dentro de
+    # ella el siguiente de su lista barajada (semilla 2026). Misma logica en Facebook.
     franja = int(time.time() // 1800)
-    amazon = sorted(p["asin"] for p in productos if p.get("tienda") != "jowua")
-    jowua = sorted(p["asin"] for p in productos if p.get("tienda") == "jowua")
-    lista = amazon if (franja % 2 == 0 or not jowua) else jowua
-    if not lista:
-        lista = jowua or amazon
+    presentes = [t for t in TIENDAS if any(tienda_de(p) == t for p in productos)]
+    tienda = presentes[franja % len(presentes)]
+    lista = sorted(p["asin"] for p in productos if tienda_de(p) == tienda)
     random.Random(2026).shuffle(lista)
-    return lista[(franja // 2) % len(lista)]
+    return lista[(franja // len(presentes)) % len(lista)]
 
 
 def siguiente(productos):
@@ -139,9 +145,10 @@ def main():
         if os.environ.get(k):
             env[k] = os.environ[k]
     productos = json.loads((AQUI / "productos.json").read_text(encoding="utf-8"))
-    extra = AQUI / "productos_jowua.json"  # articulos de Jowua (otra tienda de afiliado)
-    if extra.exists():
-        productos += json.loads(extra.read_text(encoding="utf-8"))
+    for nombre in ("productos_jowua.json", "productos_hansshow.json"):  # otras tiendas de afiliado
+        extra = AQUI / nombre
+        if extra.exists():
+            productos += json.loads(extra.read_text(encoding="utf-8"))
     productos = [p for p in productos if not p.get("pausado")]
     token, chat = env.get("TELEGRAM_BOT_TOKEN", ""), env.get("TELEGRAM_CHAT_ID", "")
 
@@ -171,7 +178,7 @@ def main():
 
     if not token or not chat:
         sys.exit("Falta TELEGRAM_BOT_TOKEN o TELEGRAM_CHAT_ID en .env")
-    res = enviar(token, chat, texto, url, "🛒 Ver en Jowua" if es_jowua(p) else "🛒 Ver en Amazon")
+    res = enviar(token, chat, texto, url, BOTONES[tienda_de(p)])
     if res.get("ok"):
         if not sin_estado:
             f_estado.write_text(json.dumps(nuevo_estado), encoding="utf-8")
