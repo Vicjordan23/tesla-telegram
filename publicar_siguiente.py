@@ -25,10 +25,11 @@ TAG = "teslaaccesorios-21"
 FACEBOOK = "https://www.facebook.com/profile.php?id=61596316649956"
 AVISO = (
     "🚗⚡ <b>Accesorios Tesla Model 3 y Model Y</b>\n\n"
-    "Cada 30 minutos, un accesorio con muy buenas valoraciones en Amazon.es, "
-    "solo para los modelos actuales (Model 3 Highland y Model Y Juniper).\n\n"
-    "<i>En calidad de Afiliado de Amazon, obtengo ingresos por las compras adscritas "
-    "que cumplen los requisitos. El precio para ti no cambia.</i>"
+    "Cada 30 minutos, un accesorio para tu Tesla de tres tiendas: Amazon.es, Jowua y Hansshow.\n\n"
+    "🏷️ Descuentos: 5 % en Jowua con el código ACCESORIOSTESLA y 20 % en Hansshow con el código VICTOR.\n\n"
+    "<i>Enlaces de afiliado. En calidad de Afiliado de Amazon, obtengo ingresos por las compras adscritas "
+    "que cumplen los requisitos. En Jowua y Hansshow también puedo recibir una comisión. "
+    "El precio para ti no sube.</i>"
 )
 
 
@@ -71,6 +72,32 @@ def tienda_de(p):
     return p.get("tienda", "amazon")
 
 
+DESCUENTOS = {"amazon": 0.0, "jowua": 0.05, "hansshow": 0.20, "evdance": 0.20}  # descuento de cada tienda con su codigo
+CODIGOS = {"jowua": "ACCESORIOSTESLA", "hansshow": "VICTOR", "evdance": "EVEU20"}
+
+
+def linea_precio(p):
+    """Precio FINAL (con el descuento de la tienda) a partir de precios.json (se actualiza cada semana). '' si no hay precio."""
+    try:
+        d = json.loads((AQUI / "precios.json").read_text(encoding="utf-8")).get(p["asin"])
+    except Exception:
+        return ""
+    if not d:
+        return ""
+    t = tienda_de(p)
+    dto = DESCUENTOS.get(t, 0)
+    final = int(d["p"] * (1 - dto) + 0.5)
+
+    def eur(c):
+        return f"{c // 100:,}".replace(",", ".") + f",{c % 100:02d} €"
+
+    desde = "Desde " if d.get("d") else ""
+    dia = d["f"][8:10] + "/" + d["f"][5:7]
+    if dto:
+        return f"💶 {desde}{eur(final)} con el código {CODIGOS[t]} (precio en tienda: {eur(d['p'])}; precio del {dia})"
+    return f"💶 {desde}{eur(final)} (precio del {dia}; puede variar)"
+
+
 def construir(p):
     tienda = tienda_de(p)
     url = url_producto(p["asin"]) if tienda == "amazon" else p["url"]
@@ -79,6 +106,9 @@ def construir(p):
         f"{html.escape(p['descripcion'])}\n\n"
         f"✅ {html.escape(p['modelos'])}"
     )
+    lp = linea_precio(p)
+    if lp:
+        texto += "\n\n" + lp
     if tienda == "jowua":  # tienda Jowua: descuento (sin precios) y aviso de afiliado
         texto += (
             "\n\n🏷️ 5 % de descuento con el código ACCESORIOSTESLA (con este enlace se aplica solo)"

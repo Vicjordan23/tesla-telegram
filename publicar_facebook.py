@@ -62,6 +62,32 @@ def tienda_de(p):
     return p.get("tienda", "amazon")
 
 
+DESCUENTOS = {"amazon": 0.0, "jowua": 0.05, "hansshow": 0.20, "evdance": 0.20}  # descuento de cada tienda con su codigo
+CODIGOS = {"jowua": "ACCESORIOSTESLA", "hansshow": "VICTOR", "evdance": "EVEU20"}
+
+
+def linea_precio(p):
+    """Precio FINAL (con el descuento de la tienda) a partir de precios.json (se actualiza cada semana). '' si no hay precio."""
+    try:
+        d = json.loads((AQUI / "precios.json").read_text(encoding="utf-8")).get(p["asin"])
+    except Exception:
+        return ""
+    if not d:
+        return ""
+    t = tienda_de(p)
+    dto = DESCUENTOS.get(t, 0)
+    final = int(d["p"] * (1 - dto) + 0.5)
+
+    def eur(c):
+        return f"{c // 100:,}".replace(",", ".") + f",{c % 100:02d} €"
+
+    desde = "Desde " if d.get("d") else ""
+    dia = d["f"][8:10] + "/" + d["f"][5:7]
+    if dto:
+        return f"💶 {desde}{eur(final)} con el código {CODIGOS[t]} (precio en tienda: {eur(d['p'])}; precio del {dia})"
+    return f"💶 {desde}{eur(final)} (precio del {dia}; puede variar)"
+
+
 def construir(p):
     tienda = tienda_de(p)
     jowua = tienda == "jowua"
@@ -71,6 +97,9 @@ def construir(p):
     except Exception:
         opinion = ""
     bloque = f"💬 Opiniones de compradores en Amazon: {opinion}\n\n" if opinion and tienda == "amazon" else ""
+    lp = linea_precio(p)
+    if lp:
+        bloque += lp + "\n\n"
     if jowua:  # tienda Jowua: descuento (sin precios) y aviso de afiliado
         aviso = "🏷️ 5 % de descuento con el código ACCESORIOSTESLA (con este enlace se aplica solo).\n"
     elif tienda == "hansshow":  # Hansshow: cupon de afiliado de Victor (el enlace lleva su codigo bg_ref)
