@@ -63,8 +63,8 @@ def url_producto(asin):
 
 
 TIENDAS = ("amazon", "jowua", "hansshow", "evdance")
-# Turno de 7 franjas de 30 min: Amazon, Jowua y Hansshow 2 veces cada una y EVDANCE 1 (envio a Espana caro: menos peso)
-TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow", "evdance")
+# Turno de 133 franjas de 30 min: Amazon, Jowua y Hansshow por turnos (66 cada uno... ver abajo) y EVDANCE 1 sola (envio a Espana caro)
+TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow") * 22 + ("evdance",)  # 133 franjas: EVDANCE 1 vez (~cada 2,8 dias; 11 productos = vuelta de ~1 mes)
 BOTONES = {"amazon": "🛒 Ver en Amazon", "jowua": "🛒 Ver en Jowua", "hansshow": "🛒 Ver en Hansshow", "evdance": "🛒 Ver en EVDANCE"}
 
 
