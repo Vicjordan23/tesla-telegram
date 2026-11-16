@@ -61,8 +61,10 @@ def url_producto(asin):
     return f"https://www.amazon.es/dp/{asin}?tag={TAG}"
 
 
-TIENDAS = ("amazon", "jowua", "hansshow")  # orden de la rotacion: una tienda por franja de 30 min
-BOTONES = {"amazon": "🛒 Ver en Amazon", "jowua": "🛒 Ver en Jowua", "hansshow": "🛒 Ver en Hansshow"}
+TIENDAS = ("amazon", "jowua", "hansshow", "evdance")
+# Turno de 7 franjas de 30 min: Amazon, Jowua y Hansshow 2 veces cada una y EVDANCE 1 (envio a Espana caro: menos peso)
+TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow", "evdance")
+BOTONES = {"amazon": "🛒 Ver en Amazon", "jowua": "🛒 Ver en Jowua", "hansshow": "🛒 Ver en Hansshow", "evdance": "🛒 Ver en EVDANCE"}
 
 
 def tienda_de(p):
@@ -83,6 +85,8 @@ def construir(p):
         )
     elif tienda == "hansshow":  # Hansshow: cupon de afiliado de Victor (el enlace lleva su codigo bg_ref)
         texto += "\n\n🏷️ 20 % de descuento con el código VICTOR al pagar"
+    elif tienda == "evdance":  # EVDANCE (Awin): codigo de la tienda UE
+        texto += "\n\n🏷️ Con el código EVEU20 hasta 20 % de descuento en la tienda. Consulta el envío a España en la ficha."
     return texto, url
 
 
@@ -113,11 +117,13 @@ def siguiente_sin_estado(productos):
     # Cada franja de 30 min toca una tienda (Amazon, Jowua, Hansshow, por turnos = 1/3 cada una) y dentro de
     # ella el siguiente de su lista barajada (semilla 2026). Misma logica en Facebook.
     franja = int(time.time() // 1800)
-    presentes = [t for t in TIENDAS if any(tienda_de(p) == t for p in productos)]
-    tienda = presentes[franja % len(presentes)]
+    turno = [t for t in TURNO if any(tienda_de(p) == t for p in productos)]
+    pos = franja % len(turno)
+    tienda = turno[pos]
     lista = sorted(p["asin"] for p in productos if tienda_de(p) == tienda)
     random.Random(2026).shuffle(lista)
-    return lista[(franja // len(presentes)) % len(lista)]
+    k = (franja // len(turno)) * turno.count(tienda) + turno[:pos].count(tienda)  # EVDANCE pesa 1/7 (envio caro a Espana)
+    return lista[k % len(lista)]
 
 
 def siguiente(productos):
@@ -145,7 +151,7 @@ def main():
         if os.environ.get(k):
             env[k] = os.environ[k]
     productos = json.loads((AQUI / "productos.json").read_text(encoding="utf-8"))
-    for nombre in ("productos_jowua.json", "productos_hansshow.json"):  # otras tiendas de afiliado
+    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_evdance.json"):  # otras tiendas de afiliado
         extra = AQUI / nombre
         if extra.exists():
             productos += json.loads(extra.read_text(encoding="utf-8"))

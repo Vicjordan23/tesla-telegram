@@ -26,7 +26,9 @@ from pathlib import Path
 AQUI = Path(__file__).resolve().parent
 API = "https://graph.facebook.com/v21.0"
 CANAL = "t.me/teslaaccesorios"
-TIENDAS = ("amazon", "jowua", "hansshow")  # orden de la rotacion (igual que Telegram y Facebook)
+TIENDAS = ("amazon", "jowua", "hansshow", "evdance")
+# Turno de 7 franjas de 30 min: Amazon, Jowua y Hansshow 2 veces cada una y EVDANCE 1 (envio a Espana caro: menos peso)
+TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow", "evdance")
 
 
 def dentro_de_ventana(texto):
@@ -48,11 +50,13 @@ def tienda_de(p):
 def elegir(productos):
     # Identico a publicar_siguiente.py / publicar_facebook.py (no tocar uno sin tocar los otros).
     franja = int(time.time() // 1800)
-    presentes = [t for t in TIENDAS if any(tienda_de(p) == t for p in productos)]
-    tienda = presentes[franja % len(presentes)]
+    turno = [t for t in TURNO if any(tienda_de(p) == t for p in productos)]
+    pos = franja % len(turno)
+    tienda = turno[pos]
     lista = sorted(p["asin"] for p in productos if tienda_de(p) == tienda)
     random.Random(2026).shuffle(lista)
-    return lista[(franja // len(presentes)) % len(lista)]
+    k = (franja // len(turno)) * turno.count(tienda) + turno[:pos].count(tienda)  # EVDANCE pesa 1/7 (envio caro a Espana)
+    return lista[k % len(lista)]
 
 
 def leyenda(p):
@@ -70,6 +74,8 @@ def leyenda(p):
         partes.append("🏷️ 5 % de descuento con el código ACCESORIOSTESLA (con el enlace del canal se aplica solo).")
     elif tienda == "hansshow":
         partes.append("🏷️ 20 % de descuento con el código VICTOR al pagar.")
+    elif tienda == "evdance":
+        partes.append("🏷️ Con el código EVEU20 hasta 20 % de descuento en la tienda. Consulta el envío a España en la ficha.")
     partes.append(f"🛒 Enlace de compra en nuestro canal de Telegram: {CANAL} (enlace en la bio). "
                   "Un accesorio nuevo cada 30 minutos.")
     partes.append("#tesla #teslamodel3 #teslamodely #accesoriostesla #teslaespaña")
@@ -105,7 +111,7 @@ def main():
         sys.stdout.reconfigure(encoding="utf-8")
     args = set(sys.argv[1:])
     productos = json.loads((AQUI / "productos.json").read_text(encoding="utf-8"))
-    for nombre in ("productos_jowua.json", "productos_hansshow.json"):  # otras tiendas de afiliado
+    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_evdance.json"):  # otras tiendas de afiliado
         extra = AQUI / nombre
         if extra.exists():
             productos += json.loads(extra.read_text(encoding="utf-8"))
