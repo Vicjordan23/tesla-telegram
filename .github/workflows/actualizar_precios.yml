@@ -1,0 +1,38 @@
+name: Actualizar precios
+
+on:
+  workflow_dispatch:
+    inputs:
+      aplicar:
+        description: "Escribir los precios en precios.json y precios_tesery.json (si no, solo prueba)"
+        type: boolean
+        default: false
+  schedule:
+    - cron: "30 7 * * 1"          # lunes 07:30 UTC, despues del buscador de productos; si GitHub no lo lanza, usar el boton
+
+permissions:
+  contents: write                 # para guardar los precios
+
+jobs:
+  precios:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Leer los precios de las tiendas
+        env:
+          CREATORS_API_CREDENTIAL_ID: ${{ secrets.CREATORS_API_CREDENTIAL_ID }}
+          CREATORS_API_CREDENTIAL_SECRET: ${{ secrets.CREATORS_API_CREDENTIAL_SECRET }}
+          APLICAR: ${{ (github.event_name == 'schedule' || inputs.aplicar) && '1' || '' }}
+        run: python3 actualizar_precios_web.py
+      - name: Guardar cambios
+        run: |
+          if [ -n "$(git status --porcelain precios.json precios_tesery.json)" ]; then
+            git config user.name "github-actions"
+            git config user.email "github-actions@users.noreply.github.com"
+            git add precios.json precios_tesery.json
+            git commit -m "Actualizar precios (semanal)"
+            git push
+          else
+            echo "Sin cambios en los precios"
+          fi
