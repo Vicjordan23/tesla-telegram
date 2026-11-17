@@ -1718,5 +1718,21 @@
   "modelos": "Model Y Juniper",
   "pausado": false,
   "auto": true
+ },
+ {
+  "asin": "B0F7JXXSZS",
+  "emoji": "🏁",
+  "titulo": "TOPABYTE Alerón (spoiler) para Tesla Model Y Juniper 2025-2026",
+  "descripcion": "Alerón para el maletero del Model Y Juniper. Un toque deportivo que se coloca encima del portón trasero.",
+  "modelos": "Model Y Juniper 2025-2026",
+  "pausado": false
+ },
+ {
+  "asin": "B0H11V8456",
+  "emoji": "☀️",
+  "titulo": "Parasol plegable tipo paraguas + protector de volante anticalor (pack 2 en 1)",
+  "descripcion": "Parasol de 140x80 cm para el parabrisas, plegable como un paraguas y con funda, más protector para el volante. Ayuda a reducir el calor dentro del coche.",
+  "modelos": "Universal (vale para cualquier coche, también Tesla)",
+  "pausado": false
  }
 ]
