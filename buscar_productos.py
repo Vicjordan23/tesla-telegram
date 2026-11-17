@@ -40,6 +40,21 @@ CONSULTAS = [
     "tesla model y juniper soporte", "tesla model 3 highland interior",
     "tesla model y juniper exterior", "tesla model y juniper cable carga",
     "tesla model y juniper parasol", "tesla model y juniper limpieza",
+    # 17/11/2026: mas categorias para ampliar el catalogo de Amazon
+    "tesla model y juniper reposabrazos", "tesla model y juniper red maletero",
+    "tesla model y juniper organizador maletero", "tesla model y juniper ambientador",
+    "tesla model y juniper guardabarros", "tesla model y juniper tapacubos",
+    "tesla model y juniper cargador movil", "tesla model y juniper soporte telefono",
+    "tesla model y juniper reposacabezas", "tesla model y juniper almohada",
+    "tesla model y juniper cortina", "tesla model y juniper llavero",
+    "tesla model y juniper pedales", "tesla model y juniper nevera",
+    "tesla model 3 highland maletero", "tesla model 3 highland consola central",
+    "tesla model 3 highland luces ambiente", "tesla model 3 highland cargador",
+    "tesla model 3 highland organizador", "tesla model 3 highland parasol",
+    "tesla model 3 highland reposabrazos", "tesla model 3 highland guardabarros",
+    "tesla model 3 highland cubierta asiento", "tesla model 3 highland llavero",
+    "tesla model y 2025 accesorios", "tesla model y 2026 accesorios",
+    "tesla model 3 2024 accesorios", "tesla model 3 2025 accesorios",
 ]
 ACTUAL = re.compile(r"juniper|highland|2025|2026|nuevo|new model", re.I)
 ANTIGUO = re.compile(r"(2017|2018|2019|2020|2021)\s*[-–]\s*(2022|2023)\b")
