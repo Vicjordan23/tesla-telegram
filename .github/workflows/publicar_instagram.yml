@@ -5,7 +5,8 @@ on:
 
 jobs:
   publicar:
-    # Reactivado el 15/11/2026 (Vic): ahora publica la foto real del producto, no tarjetas dibujadas.
+    # PAUSADO 17/11/2026 (Vic): Meta bloquea media_publish (error 2207051). Reactivar quitando la linea if: false.
+    if: false
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
