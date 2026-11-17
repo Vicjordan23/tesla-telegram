@@ -62,26 +62,28 @@ def url_producto(asin):
     return f"https://www.amazon.es/dp/{asin}?tag={TAG}"
 
 
-TIENDAS = ("amazon", "jowua", "hansshow", "evdance")
-# Turno de 133 franjas de 30 min: Amazon, Jowua y Hansshow por turnos (66 cada uno... ver abajo) y EVDANCE 1 sola (envio a Espana caro)
-TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow") * 22 + ("evdance",)  # 133 franjas: EVDANCE 1 vez (~cada 2,8 dias; 11 productos = vuelta de ~1 mes)
-BOTONES = {"amazon": "🛒 Ver en Amazon", "jowua": "🛒 Ver en Jowua", "hansshow": "🛒 Ver en Hansshow", "evdance": "🛒 Ver en EVDANCE"}
+TIENDAS = ("amazon", "jowua", "hansshow", "tesery", "evdance")
+# Turno de 134 franjas de 30 min: ciclo de 7 (Amazon, Jowua y Hansshow 2 veces cada una y Tesery 1: comision del 2 %) x19 y EVDANCE 1 sola (envio a Espana caro)
+TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow", "tesery") * 19 + ("evdance",)  # 134 franjas: EVDANCE 1 vez (~cada 2,8 dias; 11 productos = vuelta de ~1 mes)
+BOTONES = {"amazon": "🛒 Ver en Amazon", "jowua": "🛒 Ver en Jowua", "hansshow": "🛒 Ver en Hansshow", "tesery": "🛒 Ver en Tesery", "evdance": "🛒 Ver en EVDANCE"}
 
 
 def tienda_de(p):
     return p.get("tienda", "amazon")
 
 
-DESCUENTOS = {"amazon": 0.0, "jowua": 0.05, "hansshow": 0.20, "evdance": 0.20}  # descuento de cada tienda con su codigo
-CODIGOS = {"jowua": "ACCESORIOSTESLA", "hansshow": "VICTOR", "evdance": "EVEU20"}
+DESCUENTOS = {"amazon": 0.0, "jowua": 0.05, "hansshow": 0.20, "tesery": 0.05, "evdance": 0.20}  # descuento de cada tienda con su codigo
+CODIGOS = {"jowua": "ACCESORIOSTESLA", "hansshow": "VICTOR", "tesery": "ACCESORIOSTESLA", "evdance": "EVEU20"}
 
 
 def linea_precio(p):
     """Precio FINAL (con el descuento de la tienda) a partir de precios.json (se actualiza cada semana). '' si no hay precio."""
-    try:
-        d = json.loads((AQUI / "precios.json").read_text(encoding="utf-8")).get(p["asin"])
-    except Exception:
-        return ""
+    d = None
+    for nombre in ("precios.json", "precios_tesery.json"):  # Tesery tiene su propio archivo de precios
+        try:
+            d = d or json.loads((AQUI / nombre).read_text(encoding="utf-8")).get(p["asin"])
+        except Exception:
+            pass
     if not d:
         return ""
     t = tienda_de(p)
@@ -115,6 +117,8 @@ def construir(p):
         )
     elif tienda == "hansshow":  # Hansshow: cupon de afiliado de Victor (el enlace lleva su codigo bg_ref)
         texto += "\n\n🏷️ 20 % de descuento con el código VICTOR al pagar"
+    elif tienda == "tesery":  # Tesery (GoAffPro): codigo de Vic, 5 %
+        texto += "\n\n🏷️ 5 % de descuento con el código ACCESORIOSTESLA al pagar"
     elif tienda == "evdance":  # EVDANCE (Awin): codigo de la tienda UE
         texto += "\n\n🏷️ Con el código EVEU20 hasta 20 % de descuento en la tienda. Consulta el envío a España en la ficha."
     return texto, url
@@ -181,7 +185,7 @@ def main():
         if os.environ.get(k):
             env[k] = os.environ[k]
     productos = json.loads((AQUI / "productos.json").read_text(encoding="utf-8"))
-    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_evdance.json"):  # otras tiendas de afiliado
+    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_tesery.json", "productos_evdance.json"):  # otras tiendas de afiliado
         extra = AQUI / nombre
         if extra.exists():
             productos += json.loads(extra.read_text(encoding="utf-8"))
