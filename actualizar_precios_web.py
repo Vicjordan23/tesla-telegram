@@ -226,6 +226,26 @@ def main():
     sin_nada = [a for a in activos_ids if a not in precios and a not in precios_t and (not solo)]
     print(f"Activos sin ningun precio (los publicadores los saltan): {len(sin_nada)}")
 
+    # Regla de Vic: producto sin precio = no se publica. Si una tienda se leyo bien pero un producto lleva mas de
+    # MAX_DIAS sin precio nuevo (agotado, retirado...), se le quita el precio y los publicadores lo saltan.
+    MAX_DIAS = 10
+    limite = (datetime.date.today() - datetime.timedelta(days=MAX_DIAS)).isoformat()
+    leidas = {t for t, ok, tot, falta in resumen if tot and ok >= 0.5 * tot}
+    caducados = []
+    for p in activos:
+        t = p.get("tienda", "amazon")
+        if t not in leidas:
+            continue
+        destino = precios_t if t == "tesery" else precios
+        d = destino.get(p["asin"])
+        if d and d["f"] < limite:
+            caducados.append(p["asin"])
+            if aplicar:
+                del destino[p["asin"]]
+    print(f"Precios caducados (mas de {MAX_DIAS} dias sin actualizar) {'quitados' if aplicar else 'que se quitarian'}: {len(caducados)}")
+    for a in caducados[:15]:
+        print("   caducado:", a)
+
     if not aplicar:
         print("\nModo prueba (sin --aplicar / APLICAR): no se escribe nada.")
         return

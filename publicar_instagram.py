@@ -63,6 +63,17 @@ DESCUENTOS = {"amazon": 0.0, "jowua": 0.05, "hansshow": 0.20, "tesery": 0.05, "e
 CODIGOS = {"jowua": "ACCESORIOSTESLA", "hansshow": "VICTOR", "tesery": "ACCESORIOSTESLA", "evdance": "EVEU20"}
 
 
+def con_precio(productos):
+    """Regla de Vic: producto sin precio = no se publica. Si no se puede leer ningun precio, no se filtra (para no parar todo)."""
+    ids = set()
+    for nombre in ("precios.json", "precios_tesery.json"):
+        try:
+            ids |= set(json.loads((AQUI / nombre).read_text(encoding="utf-8")))
+        except Exception:
+            pass
+    return [p for p in productos if p["asin"] in ids] if ids else productos
+
+
 def linea_precio(p):
     """Precio FINAL (con el descuento de la tienda) a partir de precios.json (se actualiza cada semana). '' si no hay precio."""
     d = None
@@ -148,7 +159,7 @@ def main():
         extra = AQUI / nombre
         if extra.exists():
             productos += json.loads(extra.read_text(encoding="utf-8"))
-    productos = [p for p in productos if not p.get("pausado")]
+    productos = con_precio([p for p in productos if not p.get("pausado")])
     if "--forzar" not in args and not dentro_de_ventana(os.environ.get("VENTANA", "")):
         print("Fuera de la ventana horaria; no se publica.")
         return
