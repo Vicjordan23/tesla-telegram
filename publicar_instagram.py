@@ -163,6 +163,10 @@ def main():
     if "--forzar" not in args and not dentro_de_ventana(os.environ.get("VENTANA", "")):
         print("Fuera de la ventana horaria; no se publica.")
         return
+    cada = int(os.environ.get("IG_CADA", "1") or "1")  # 17/11/2026: tras el bloqueo de Meta (2207051), publicar solo 1 de cada N franjas
+    if "--forzar" not in args and cada > 1 and int(time.time() // 1800) % cada != 0:
+        print(f"IG_CADA={cada}: esta franja no toca publicar en Instagram.")
+        return
     asin = elegir(productos)  # la rotacion se calcula con TODAS las tiendas para coincidir con Telegram/Facebook
     p = next(x for x in productos if x["asin"] == asin)
     permitidas = [t.strip() for t in os.environ.get("TIENDAS_IG", "").split(",") if t.strip()]
