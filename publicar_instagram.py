@@ -53,8 +53,7 @@ def elegir(productos):
     turno = [t for t in TURNO if any(tienda_de(p) == t for p in productos)]
     pos = franja % len(turno)
     tienda = turno[pos]
-    lista = sorted(p["asin"] for p in productos if tienda_de(p) == tienda)
-    random.Random(2026).shuffle(lista)
+    lista = lista_tienda(productos, tienda)  # los caros (>= mediana de la tienda) salen el doble
     k = (franja // len(turno)) * turno.count(tienda) + turno[:pos].count(tienda)  # EVDANCE pesa 1/7 (envio caro a Espana)
     return lista[k % len(lista)]
 
@@ -72,6 +71,27 @@ def con_precio(productos):
         except Exception:
             pass
     return [p for p in productos if p["asin"] in ids] if ids else productos
+
+
+def lista_tienda(productos, tienda):
+    """Lista rotativa de una tienda: todos los productos una vez (barajados, semilla 2026) y despues, otra vez,
+    los de precio igual o superior a la mediana de la tienda (barajados, semilla 2027): los caros dan mas comision
+    y salen el doble. IDENTICA en publicar_siguiente.py, publicar_facebook.py y publicar_instagram.py."""
+    precios = {}
+    for nombre in ("precios.json", "precios_tesery.json"):
+        try:
+            precios.update(json.loads((AQUI / nombre).read_text(encoding="utf-8")))
+        except Exception:
+            pass
+    base = sorted(p["asin"] for p in productos if tienda_de(p) == tienda)
+    random.Random(2026).shuffle(base)
+    valores = sorted(precios[a]["p"] for a in base if a in precios)
+    if len(valores) < 4:
+        return base
+    mediana = valores[len(valores) // 2]
+    caros = sorted(a for a in base if a in precios and precios[a]["p"] >= mediana)
+    random.Random(2027).shuffle(caros)
+    return base + caros
 
 
 def linea_precio(p):
