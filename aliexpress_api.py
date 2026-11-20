@@ -31,19 +31,44 @@ BUSQUEDAS = ["tesla", "tesla model 3", "tesla model y", "model 3 highland", "mod
              "tesla accesorios", "tesla model y 2025", "tesla model 3 2024"]
 
 
-def firmar(params, secreto):
+def firmar(params, secreto, modo="sha256"):
     texto = "".join(k + str(params[k]) for k in sorted(params))
+    if modo == "md5":  # firma TOP antigua: md5(secreto + texto + secreto)
+        return hashlib.md5((secreto + texto + secreto).encode("utf-8")).hexdigest().upper()
     return hmac.new(secreto.encode("utf-8"), texto.encode("utf-8"), hashlib.sha256).hexdigest().upper()
 
 
+MODO = {"firma": None}  # se fija con la primera llamada que funciona
+
+
+def _params(metodo, negocio, clave, modo):
+    if modo == "md5":  # protocolo TOP: hora de Pekin en texto, v=2.0, format=json
+        hora = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(time.time() + 8 * 3600))
+        p = {"app_key": clave, "method": metodo, "timestamp": hora, "sign_method": "md5", "v": "2.0", "format": "json"}
+    else:
+        p = {"app_key": clave, "method": metodo, "timestamp": str(int(time.time() * 1000)), "sign_method": "sha256"}
+    p.update({k: str(v) for k, v in negocio.items()})
+    return p
+
+
 def llamar(metodo, negocio, clave, secreto):
-    params = {"app_key": clave, "method": metodo, "timestamp": str(int(time.time() * 1000)), "sign_method": "sha256"}
-    params.update({k: str(v) for k, v in negocio.items()})
-    params["sign"] = firmar(params, secreto)
-    req = urllib.request.Request(URL, data=urllib.parse.urlencode(params).encode("utf-8"),
-                                 headers={"Content-Type": "application/x-www-form-urlencoded;charset=utf-8"})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        return json.loads(r.read().decode("utf-8"))
+    modos = [MODO["firma"]] if MODO["firma"] else ["sha256", "md5"]
+    for modo in modos:
+        params = _params(metodo, negocio, clave, modo)
+        params["sign"] = firmar(params, secreto, modo)
+        req = urllib.request.Request(URL, data=urllib.parse.urlencode(params).encode("utf-8"),
+                                     headers={"Content-Type": "application/x-www-form-urlencoded;charset=utf-8"})
+        with urllib.request.urlopen(req, timeout=60) as r:
+            resp = json.loads(r.read().decode("utf-8"))
+        codigo = str((resp.get("error_response") or {}).get("code", ""))
+        if "Signature" in codigo and modo != modos[-1]:
+            print(f"Firma {modo} rechazada ({codigo}); pruebo la siguiente")
+            continue
+        if not MODO["firma"] and "Signature" not in codigo:
+            MODO["firma"] = modo
+            print(f"Firma aceptada: {modo}")
+        return resp
+    return resp
 
 
 def resultado(respuesta, nombre):
@@ -105,7 +130,11 @@ def enlaces(ids, clave, secreto, tracking):
 
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
-    clave, secreto = os.environ.get("ALIEXPRESS_APP_KEY", ""), os.environ.get("ALIEXPRESS_APP_SECRET", "")
+    crudo_c, crudo_s = os.environ.get("ALIEXPRESS_APP_KEY", ""), os.environ.get("ALIEXPRESS_APP_SECRET", "")
+    clave, secreto = crudo_c.strip(), crudo_s.strip()
+    if (clave, secreto) != (crudo_c, crudo_s):
+        print("Aviso: el App Key o el App Secret guardados tenian espacios o saltos de linea al principio/final (se han quitado)")
+    print(f"App Key: {len(clave)} caracteres, solo digitos: {clave.isdigit()}; App Secret: {len(secreto)} caracteres")
     tracking = os.environ.get("ALIEXPRESS_TRACKING_ID") or "enlace_id"
     if not clave or not secreto:
         sys.exit("Faltan ALIEXPRESS_APP_KEY / ALIEXPRESS_APP_SECRET (secretos de GitHub)")
