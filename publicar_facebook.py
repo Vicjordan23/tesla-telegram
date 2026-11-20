@@ -17,6 +17,7 @@ import json
 import os
 import random
 import sys
+from traducir import a_espanol
 import time
 import urllib.error
 import urllib.parse
@@ -155,8 +156,8 @@ def construir(p):
     else:
         aviso = "Enlace de afiliado de Amazon: a ti no te cuesta nada más.\n"
     texto = (
-        f"{p.get('emoji', '🔥')} {p['titulo']}\n\n"
-        f"{p['descripcion']}\n\n"
+        f"{p.get('emoji', '🔥')} {a_espanol(p['titulo'])}\n\n"
+        f"{a_espanol(p['descripcion'])}\n\n"
         f"✅ {p['modelos']}\n\n"
         f"{bloque}"
         f"{aviso}"

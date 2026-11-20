@@ -16,6 +16,7 @@ import json
 import os
 import random
 import sys
+from traducir import a_espanol
 import time
 import urllib.error
 import urllib.parse
@@ -129,7 +130,7 @@ def linea_precio(p):
 
 def leyenda(p):
     tienda = tienda_de(p)
-    partes = [f"{p.get('emoji', '🔥')} {p['titulo']}", p["descripcion"], f"✅ {p['modelos']}"]
+    partes = [f"{p.get('emoji', '🔥')} {a_espanol(p['titulo'])}", a_espanol(p["descripcion"]), f"✅ {p['modelos']}"]
     lp = linea_precio(p)
     if lp:
         partes.append(lp)

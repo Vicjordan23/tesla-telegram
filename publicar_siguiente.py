@@ -16,7 +16,10 @@ import os
 import random
 import sys
 import time
+import urllib.error
 import urllib.request
+import uuid
+from traducir import a_espanol
 from datetime import datetime
 from pathlib import Path
 
@@ -145,8 +148,8 @@ def construir(p):
     tienda = tienda_de(p)
     url = url_producto(p["asin"]) if tienda == "amazon" else p["url"]
     texto = (
-        f"{p.get('emoji', '🔥')} <b>{html.escape(p['titulo'])}</b>\n\n"
-        f"{html.escape(p['descripcion'])}\n\n"
+        f"{p.get('emoji', '🔥')} <b>{html.escape(a_espanol(p['titulo']))}</b>\n\n"
+        f"{html.escape(a_espanol(p['descripcion']))}\n\n"
         f"✅ {html.escape(p['modelos'])}"
     )
     lp = linea_precio(p)
@@ -167,24 +170,64 @@ def construir(p):
     return texto, url
 
 
-def enviar(token, chat, texto, url, boton="🛒 Ver en Amazon"):
-    cuerpo = {
-        "chat_id": chat,
-        "text": texto,
-        "parse_mode": "HTML",
-        "link_preview_options": {"url": url, "prefer_large_media": True, "show_above_text": True},
-        "reply_markup": {"inline_keyboard": [
-            [{"text": boton, "url": url}],
-            [{"text": "📘 Síguenos en Facebook", "url": FACEBOOK}],
-        ]},
-    }
+def _telegram(token, metodo, cuerpo, cabecera="application/json", datos=None):
     req = urllib.request.Request(
-        f"https://api.telegram.org/bot{token}/sendMessage",
-        data=json.dumps(cuerpo).encode("utf-8"),
-        headers={"Content-Type": "application/json"},
+        f"https://api.telegram.org/bot{token}/{metodo}",
+        data=datos if datos is not None else json.dumps(cuerpo).encode("utf-8"),
+        headers={"Content-Type": cabecera},
     )
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            return json.loads(r.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        try:
+            return json.loads(e.read().decode("utf-8"))
+        except Exception:
+            return {"ok": False, "description": str(e)}
+
+
+def _subir_foto(token, chat, imagen, caption, teclado):
+    """Plan B: descarga la foto y la sube a Telegram (cuando Telegram no puede leer la URL)."""
+    req = urllib.request.Request(imagen, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=30) as r:
-        return json.loads(r.read().decode("utf-8"))
+        foto = r.read()
+    borde = uuid.uuid4().hex
+    campos = {"chat_id": chat, "caption": caption, "parse_mode": "HTML", "reply_markup": json.dumps(teclado)}
+    crlf = b"\r\n"
+    cuerpo = b""
+    for k, v in campos.items():
+        cuerpo += f"--{borde}".encode() + crlf + f'Content-Disposition: form-data; name="{k}"'.encode() + crlf + crlf + str(v).encode("utf-8") + crlf
+    cuerpo += f"--{borde}".encode() + crlf + b'Content-Disposition: form-data; name="photo"; filename="foto.jpg"' + crlf + b"Content-Type: image/jpeg" + crlf + crlf + foto + crlf + f"--{borde}--".encode() + crlf
+    return _telegram(token, "sendPhoto", None, f"multipart/form-data; boundary={borde}", cuerpo)
+
+
+def recortar(texto, n=1024):
+    """Telegram limita el pie de foto a 1024 caracteres: se recorta la descripcion, no el precio ni el aviso."""
+    return texto if len(texto) <= n else texto[: n - 1].rsplit(" ", 1)[0] + "…"
+
+
+def enviar(token, chat, texto, url, boton="🛒 Ver en Amazon", imagen=None):
+    """Publica SIEMPRE con foto (sendPhoto). Si no hay foto o no se puede enviar, no publica nada (regla de Vic, 20/11/2026)."""
+    teclado = {"inline_keyboard": [[{"text": boton, "url": url}], [{"text": "📘 Síguenos en Facebook", "url": FACEBOOK}]]}
+    if not imagen:  # solo el aviso fijo (--aviso) va sin foto
+        return _telegram(token, "sendMessage", {"chat_id": chat, "text": texto, "parse_mode": "HTML", "reply_markup": teclado})
+    caption = recortar(texto)
+    res = _telegram(token, "sendPhoto", {"chat_id": chat, "photo": imagen, "caption": caption, "parse_mode": "HTML", "reply_markup": teclado})
+    if not res.get("ok"):
+        print("sendPhoto con URL fallo:", res.get("description"), "-> subo la foto descargada")
+        res = _subir_foto(token, chat, imagen, caption, teclado)
+    return res
+
+
+def imagen_de(asin):
+    for nombre in ("imagenes_ig.json", "imagenes_tesery.json", "imagenes_aliexpress.json"):
+        try:
+            u = json.loads((AQUI / nombre).read_text(encoding="utf-8")).get(asin)
+        except Exception:
+            u = None
+        if u:
+            return u
+    return None
 
 
 def siguiente_sin_estado(productos):
@@ -261,7 +304,7 @@ def main():
 
     if not token or not chat:
         sys.exit("Falta TELEGRAM_BOT_TOKEN o TELEGRAM_CHAT_ID en .env")
-    res = enviar(token, chat, texto, url, BOTONES[tienda_de(p)])
+    res = enviar(token, chat, texto, url, BOTONES[tienda_de(p)], imagen)
     if res.get("ok"):
         if not sin_estado:
             f_estado.write_text(json.dumps(nuevo_estado), encoding="utf-8")
