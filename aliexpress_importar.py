@@ -6,7 +6,8 @@ buscador del «Centro de anuncios» + «Generador de enlaces» con el ID de rast
   imagenes_aliexpress.json   ({id: url de la foto principal})
 
 Formato de aliexpress_raw.json: lista de {id, t (titulo), p (centimos con descuento, envio a ES), po (centimos sin descuento),
-c (comision %), v (ventas 30 dias), s (puntuacion de AliExpress, NO se publica), img, l (enlace corto de afiliado s.click o "")}.
+c (comision %), v (ventas: lastest_volume de la API; no se afirma un periodo concreto), s (puntuacion de AliExpress, NO se publica),
+img, l (enlace corto de afiliado s.click o "")}.
 
 Reglas: solo Model 3 / Model Y; fuera lo que solo nombra Cybertruck, Model S o Model X. Activo (pausado=false) solo si
 el titulo dice Highland, Juniper o un ano 2024-2026 (compatibilidad de la regla de Vic) Y tiene enlace de afiliado.
@@ -96,7 +97,7 @@ def main():
         ventas = int(x.get("v") or 0)
         desc = f"{cat} para Tesla en AliExpress (envío a España)."
         if ventas:
-            desc += f" {ventas} vendidos en los últimos 30 días."
+            desc += f" {ventas:,} pedidos según AliExpress.".replace(",", ".")
         prods.append({
             "asin": pid,
             "tienda": "aliexpress",
