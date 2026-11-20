@@ -296,10 +296,15 @@ def main():
     asin = os.environ.get("PRODUCTO_FORZADO") or asin  # prueba manual de un producto concreto
     p = next(x for x in productos if x["asin"] == asin)
     texto, url = construir(p)
+    imagen = imagen_de(asin)
 
     if "--prueba" in args:
         print(texto)
-        print("\nBOTON ->", url)
+        print("\nBOTON ->", url, "\nIMAGEN ->", imagen)
+        return
+
+    if not imagen:  # regla de Vic: nada se publica sin foto (la rotacion sigue igual que en Facebook e Instagram)
+        print(f"Sin imagen del producto para {asin}; no se publica en esta franja.")
         return
 
     if not token or not chat:
