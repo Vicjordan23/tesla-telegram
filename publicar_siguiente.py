@@ -87,6 +87,9 @@ def con_precio(productos):
     return [p for p in productos if p["asin"] in ids] if ids else productos
 
 
+ESTRELLA = ["B0H11V8456", "B0FC21DNGX", "B0FCC6MMTV", "B0GC5TXB1L", "B0F7JXXSZS", "B0HHK2P5SX"]  # mas clics en Afiliados (20/11/2026)
+
+
 def lista_tienda(productos, tienda):
     """Lista rotativa de una tienda: todos los productos una vez (barajados, semilla 2026) y despues, otra vez,
     los de precio igual o superior a la mediana de la tienda (barajados, semilla 2027): los caros dan mas comision
@@ -105,7 +108,13 @@ def lista_tienda(productos, tienda):
     mediana = valores[len(valores) // 2]
     caros = sorted(a for a in base if a in precios and precios[a]["p"] >= mediana)
     random.Random(2027).shuffle(caros)
-    return base + caros
+    lista = base + caros
+    # Productos con clics reales (informe de Afiliados 20/11/2026): salen 2 veces mas por vuelta, al principio y a mitad.
+    estrella = [a for a in ESTRELLA if a in base and a in precios]
+    if estrella:
+        mitad = len(lista) // 2
+        lista = estrella + lista[:mitad] + estrella + lista[mitad:]
+    return lista
 
 
 def linea_precio(p):
