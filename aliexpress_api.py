@@ -168,11 +168,18 @@ def main():
             if not prods or max(p["v"] for p in prods) == 0:  # ordenado por ventas: lo que sigue ya no vende
                 break
             time.sleep(0.5)
-    sin = [i for i, p in todos.items() if not p["l"]]
-    if sin:
-        for i, l in enlaces(sin, clave, secreto, tracking).items():
+    # Enlace CORTO (s.click.aliexpress.com/e/_xxx) para todos: el promotion_link de product.query mide ~1.000 caracteres
+    # (demasiado para Pinterest y los botones de Telegram). Si link.generate falla, se queda el largo.
+    cortos = {}
+    try:
+        cortos = enlaces(list(todos), clave, secreto, tracking)
+    except Exception as e:
+        print(f"link.generate: {e}")
+    for i, l in cortos.items():
+        if l:
             todos[i]["l"] = l
-    print(f"Total {len(todos)} productos; con enlace de afiliado {sum(1 for p in todos.values() if p['l'])}")
+    print(f"Total {len(todos)} productos; con enlace de afiliado {sum(1 for p in todos.values() if p['l'])}; "
+          f"cortos {sum(1 for p in todos.values() if '/e/' in p['l'])}")
     (AQUI / "aliexpress_raw.json").write_text(json.dumps(list(todos.values()), ensure_ascii=False), encoding="utf-8")
     import aliexpress_importar
     sys.argv = [sys.argv[0]]
