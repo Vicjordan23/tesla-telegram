@@ -5,8 +5,7 @@ on:
 
 jobs:
   publicar:
-    # PAUSADO 18/11/2026: prueba de reactivacion fallo igual (Meta 2207051 sigue bloqueando media_publish). Al reactivar usar IG_CADA=4.
-    if: false
+    # REACTIVADO 20/11/2026 por Vic: 2 publicaciones al dia (IG_CADA=16 = 1 de cada 16 franjas = cada 8 h, 2 dentro de la ventana). Si Meta devuelve 2207051, volver a pausar.
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -17,5 +16,5 @@ jobs:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           VENTANA: "08:00-23:30"
-          IG_CADA: "4"
+          IG_CADA: "16"
         run: python3 publicar_instagram.py
