@@ -1,7 +1,12 @@
 name: Publicar en Telegram
 
 on:
-  workflow_dispatch: {}       # boton "Run workflow" para probar a mano
+  workflow_dispatch:
+    inputs:
+      producto:
+        description: "ID de un producto concreto para probar (vacio = el de la franja)"
+        required: false
+        default: ""
 
 jobs:
   publicar:
@@ -13,4 +18,5 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          PRODUCTO_FORZADO: ${{ inputs.producto }}
         run: python3 publicar_siguiente.py

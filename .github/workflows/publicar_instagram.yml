@@ -1,7 +1,12 @@
 name: Publicar en Instagram
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      producto:
+        description: "ID de un producto concreto para probar (vacio = el de la franja)"
+        required: false
+        default: ""
 
 jobs:
   publicar:
@@ -16,5 +21,6 @@ jobs:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           VENTANA: "08:00-23:30"
+          PRODUCTO_FORZADO: ${{ inputs.producto }}
           IG_CADA: "16"
         run: python3 publicar_instagram.py

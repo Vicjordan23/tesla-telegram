@@ -26,9 +26,9 @@ from pathlib import Path
 AQUI = Path(__file__).resolve().parent
 API = "https://graph.facebook.com/v21.0"
 CANAL = "t.me/teslaaccesorios"
-TIENDAS = ("amazon", "jowua", "hansshow", "tesery", "evdance")
+TIENDAS = ("amazon", "jowua", "hansshow", "tesery", "evdance", "aliexpress")
 # Turno de 134 franjas de 30 min: ciclo de 7 (Amazon, Jowua y Hansshow 2 veces cada una y Tesery 1: comision del 2 %) x19 y EVDANCE 1 sola (envio a Espana caro)
-TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow", "tesery") * 19 + ("evdance",)  # 134 franjas: EVDANCE 1 vez (~cada 2,8 dias; 11 productos = vuelta de ~1 mes)
+TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow", "tesery", "aliexpress", "aliexpress") * 15 + ("evdance",)  # 136 franjas: ciclo de 9 (AliExpress 2 de 9, comision ~9 %) x15 y EVDANCE 1 vez
 
 
 def dentro_de_ventana(texto):
@@ -58,14 +58,14 @@ def elegir(productos):
     return lista[k % len(lista)]
 
 
-DESCUENTOS = {"amazon": 0.0, "jowua": 0.05, "hansshow": 0.20, "tesery": 0.05, "evdance": 0.20}  # descuento de cada tienda con su codigo
+DESCUENTOS = {"amazon": 0.0, "jowua": 0.05, "hansshow": 0.20, "tesery": 0.05, "evdance": 0.20, "aliexpress": 0.0}  # descuento de cada tienda con su codigo
 CODIGOS = {"jowua": "ACCESORIOSTESLA", "hansshow": "VICTOR", "tesery": "ACCESORIOSTESLA", "evdance": "EVEU20"}
 
 
 def con_precio(productos):
     """Regla de Vic: producto sin precio = no se publica. Si no se puede leer ningun precio, no se filtra (para no parar todo)."""
     ids = set()
-    for nombre in ("precios.json", "precios_tesery.json"):
+    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json"):
         try:
             ids |= set(json.loads((AQUI / nombre).read_text(encoding="utf-8")))
         except Exception:
@@ -81,7 +81,7 @@ def lista_tienda(productos, tienda):
     los de precio igual o superior a la mediana de la tienda (barajados, semilla 2027): los caros dan mas comision
     y salen el doble. IDENTICA en publicar_siguiente.py, publicar_facebook.py y publicar_instagram.py."""
     precios = {}
-    for nombre in ("precios.json", "precios_tesery.json"):
+    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json"):
         try:
             precios.update(json.loads((AQUI / nombre).read_text(encoding="utf-8")))
         except Exception:
@@ -106,7 +106,7 @@ def lista_tienda(productos, tienda):
 def linea_precio(p):
     """Precio FINAL (con el descuento de la tienda) a partir de precios.json (se actualiza cada semana). '' si no hay precio."""
     d = None
-    for nombre in ("precios.json", "precios_tesery.json"):  # Tesery tiene su propio archivo de precios
+    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json"):  # Tesery tiene su propio archivo de precios
         try:
             d = d or json.loads((AQUI / nombre).read_text(encoding="utf-8")).get(p["asin"])
         except Exception:
@@ -147,6 +147,8 @@ def leyenda(p):
         partes.append("🏷️ 20 % de descuento con el código VICTOR al pagar.")
     elif tienda == "tesery":
         partes.append("🏷️ 5 % de descuento con el código ACCESORIOSTESLA al pagar.")
+    elif tienda == "aliexpress":
+        partes.append("🏷️ Enlace de afiliado de AliExpress: a ti no te cuesta nada más. Revisa la variante y el envío en la ficha.")
     elif tienda == "evdance":
         partes.append("🏷️ Con el código EVEU20 hasta 20 % de descuento en la tienda. Consulta el envío a España en la ficha.")
     partes.append(f"🛒 Enlace de compra en nuestro canal de Telegram: {CANAL} (enlace en la bio). "
@@ -184,7 +186,7 @@ def main():
         sys.stdout.reconfigure(encoding="utf-8")
     args = set(sys.argv[1:])
     productos = json.loads((AQUI / "productos.json").read_text(encoding="utf-8"))
-    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_tesery.json", "productos_evdance.json"):  # otras tiendas de afiliado
+    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_tesery.json", "productos_evdance.json", "productos_aliexpress.json"):  # otras tiendas de afiliado
         extra = AQUI / nombre
         if extra.exists():
             productos += json.loads(extra.read_text(encoding="utf-8"))
@@ -197,13 +199,14 @@ def main():
         print(f"IG_CADA={cada}: esta franja no toca publicar en Instagram.")
         return
     asin = elegir(productos)  # la rotacion se calcula con TODAS las tiendas para coincidir con Telegram/Facebook
+    asin = os.environ.get("PRODUCTO_FORZADO") or asin  # prueba manual de un producto concreto
     p = next(x for x in productos if x["asin"] == asin)
     permitidas = [t.strip() for t in os.environ.get("TIENDAS_IG", "").split(",") if t.strip()]
     if permitidas and tienda_de(p) not in permitidas:
         print(f"Tienda {tienda_de(p)} excluida de Instagram (TIENDAS_IG); no se publica {asin}.")
         return
     imagenes = {}
-    for nombre in ("imagenes_ig.json", "imagenes_tesery.json"):  # fotos reales por producto (Tesery en su propio archivo)
+    for nombre in ("imagenes_ig.json", "imagenes_tesery.json", "imagenes_aliexpress.json"):  # fotos reales por producto (Tesery en su propio archivo)
         try:
             imagenes.update(json.loads((AQUI / nombre).read_text(encoding="utf-8")))
         except Exception:

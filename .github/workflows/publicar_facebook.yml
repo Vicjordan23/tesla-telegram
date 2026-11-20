@@ -1,7 +1,12 @@
 name: Publicar en Facebook
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      producto:
+        description: "ID de un producto concreto para probar (vacio = el de la franja)"
+        required: false
+        default: ""
 
 jobs:
   publicar:
@@ -13,4 +18,5 @@ jobs:
         env:
           FB_PAGE_ID: me
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          PRODUCTO_FORZADO: ${{ inputs.producto }}
         run: python3 publicar_facebook.py
