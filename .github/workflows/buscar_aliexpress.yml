@@ -1,0 +1,39 @@
+name: Buscar productos AliExpress
+
+on:
+  workflow_dispatch:
+    inputs:
+      aplicar:
+        description: "Escribir productos_aliexpress.json, precios_aliexpress.json e imagenes_aliexpress.json (si no, solo prueba)"
+        type: boolean
+        default: false
+  schedule:
+    - cron: "15 7 * * 1"          # lunes 07:15 UTC; si GitHub no lo lanza, usar el boton
+
+permissions:
+  contents: write                 # para guardar los JSON de AliExpress
+
+jobs:
+  aliexpress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Buscar productos Tesla en la API de afiliados de AliExpress
+        env:
+          ALIEXPRESS_APP_KEY: ${{ secrets.ALIEXPRESS_APP_KEY }}
+          ALIEXPRESS_APP_SECRET: ${{ secrets.ALIEXPRESS_APP_SECRET }}
+          ALIEXPRESS_TRACKING_ID: enlace_id
+          APLICAR: ${{ (github.event_name == 'schedule' || inputs.aplicar) && '1' || '' }}
+        run: python3 aliexpress_api.py
+      - name: Guardar cambios
+        run: |
+          if [ -n "$(git status --porcelain productos_aliexpress.json precios_aliexpress.json imagenes_aliexpress.json)" ]; then
+            git config user.name "github-actions"
+            git config user.email "github-actions@users.noreply.github.com"
+            git add productos_aliexpress.json precios_aliexpress.json imagenes_aliexpress.json
+            git commit -m "Actualizar productos AliExpress (API de afiliados)"
+            git push
+          else
+            echo "Sin cambios en los JSON de AliExpress"
+          fi
