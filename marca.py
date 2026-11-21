@@ -9,7 +9,7 @@ import urllib.request
 from pathlib import Path
 
 AQUI = Path(__file__).resolve().parent
-WEB = os.environ.get("WEB_URL") or "https://chollesla.victor-martin-juanas.workers.dev"
+WEB = os.environ.get("WEB_URL") or "https://chollesla.es"
 CANAL = "https://t.me/teslaaccesorios"
 WEB_CORTA = WEB.replace("https://", "").replace("http://", "").rstrip("/")
 CANAL_CORTO = "t.me/teslaaccesorios"
