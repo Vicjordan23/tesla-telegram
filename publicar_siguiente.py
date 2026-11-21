@@ -28,21 +28,12 @@ AQUI = Path(__file__).resolve().parent
 TAG = "teslaaccesorios-21"
 FACEBOOK = "https://www.facebook.com/profile.php?id=61596316649956"
 AVISO = (
-    "🔥 <b>CHOLLESLA: los chollos para tu Tesla</b> 🔥
-
-"
-    "⚡ Un accesorio nuevo cada 30 minutos para Model 3 y Model Y, con el precio final ya rebajado.
-"
-    "🏪 Amazon.es, AliExpress, Jowua, Hansshow, Tesery y EVDANCE, todo en un sitio.
-"
-    "🏷️ Códigos de descuento: ACCESORIOSTESLA (Jowua y Tesery), VICTOR (Hansshow) y EVEU20 (EVDANCE).
-
-"
-    "👉 <b>Mira TODOS los chollos, busca por modelo, guarda los tuyos y crea alertas gratis:</b>
-"
-    f"🌐 {marca.WEB}
-
-"
+    "🔥 <b>CHOLLESLA: los chollos para tu Tesla</b> 🔥\n\n"
+    "⚡ Un accesorio nuevo cada 30 minutos para Model 3 y Model Y, con el precio final ya rebajado.\n"
+    "🏪 Amazon.es, AliExpress, Jowua, Hansshow, Tesery y EVDANCE, todo en un sitio.\n"
+    "🏷️ Códigos de descuento: ACCESORIOSTESLA (Jowua y Tesery), VICTOR (Hansshow) y EVEU20 (EVDANCE).\n\n"
+    "👉 <b>Mira TODOS los chollos, busca por modelo, guarda los tuyos y crea alertas gratis:</b>\n"
+    f"🌐 {marca.WEB}\n\n"
     "<i>Enlaces de afiliado. En calidad de Afiliado de Amazon, obtengo ingresos por las compras adscritas "
     "que cumplen los requisitos. El precio para ti no sube.</i>"
 )
@@ -199,8 +190,8 @@ def _telegram(token, metodo, cuerpo, cabecera="application/json", datos=None):
 
 
 def _subir_foto(token, chat, imagen, caption, teclado):
-    """Descarga la foto, le pone el logo y la sube a Telegram."""
-    foto = marca.con_logo(marca.descargar(imagen))  # foto del producto + franja con el logo de Chollesla
+    """Descarga la foto, le pone el logo de Chollesla y la sube a Telegram."""
+    foto = marca.con_logo(marca.descargar(imagen))
     borde = uuid.uuid4().hex
     campos = {"chat_id": chat, "caption": caption, "parse_mode": "HTML", "reply_markup": json.dumps(teclado)}
     crlf = b"\r\n"
@@ -218,7 +209,7 @@ def recortar(texto, n=1024):
 
 def enviar(token, chat, texto, url, boton="🛒 Ver en Amazon", imagen=None):
     """Publica SIEMPRE con foto (sendPhoto). Si no hay foto o no se puede enviar, no publica nada (regla de Vic, 20/11/2026).
-    La foto lleva el logo de Chollesla y el pie con la web y el canal sale en TODAS las publicaciones."""
+    La foto lleva el logo de Chollesla; botones y pie con la web y el canal salen en TODAS las publicaciones."""
     teclado = {"inline_keyboard": [
         [{"text": boton, "url": url}],
         [{"text": "🌐 Más chollos en la web", "url": marca.WEB}, {"text": "✈️ Canal de Telegram", "url": marca.CANAL}],
@@ -227,7 +218,7 @@ def enviar(token, chat, texto, url, boton="🛒 Ver en Amazon", imagen=None):
     if not imagen:  # solo el aviso fijo (--aviso) va sin foto
         return _telegram(token, "sendMessage", {"chat_id": chat, "text": texto, "parse_mode": "HTML", "reply_markup": teclado})
     pie = html.escape(marca.PIE_TEXTO)
-    caption = recortar(texto, 1024 - len(pie) - 2) + chr(10) * 2 + pie
+    caption = recortar(texto, 1024 - len(pie) - 2) + "\n\n" + pie
     return _subir_foto(token, chat, imagen, caption, teclado)
 
 
