@@ -18,6 +18,7 @@ import os
 import random
 import sys
 from traducir import a_espanol
+import marca
 import time
 import urllib.error
 import urllib.parse
@@ -161,7 +162,7 @@ def construir(p):
         f"✅ {p['modelos']}\n\n"
         f"{bloque}"
         f"{aviso}"
-        f"Más accesorios cada 30 minutos en Telegram: {CANAL}"
+        f"{marca.PIE_TEXTO}"
     )
     return texto, url
 

@@ -20,6 +20,7 @@ import urllib.error
 import urllib.request
 import uuid
 from traducir import a_espanol
+import marca
 from datetime import datetime
 from pathlib import Path
 
@@ -27,12 +28,23 @@ AQUI = Path(__file__).resolve().parent
 TAG = "teslaaccesorios-21"
 FACEBOOK = "https://www.facebook.com/profile.php?id=61596316649956"
 AVISO = (
-    "🚗⚡ <b>Accesorios Tesla Model 3 y Model Y</b>\n\n"
-    "Cada 30 minutos, un accesorio para tu Tesla de varias tiendas: Amazon.es, AliExpress, Jowua, Hansshow, Tesery y EVDANCE.\n\n"
-    "🏷️ Descuentos: 5 % en Jowua con el código ACCESORIOSTESLA y 20 % en Hansshow con el código VICTOR.\n\n"
+    "🔥 <b>CHOLLESLA: los chollos para tu Tesla</b> 🔥
+
+"
+    "⚡ Un accesorio nuevo cada 30 minutos para Model 3 y Model Y, con el precio final ya rebajado.
+"
+    "🏪 Amazon.es, AliExpress, Jowua, Hansshow, Tesery y EVDANCE, todo en un sitio.
+"
+    "🏷️ Códigos de descuento: ACCESORIOSTESLA (Jowua y Tesery), VICTOR (Hansshow) y EVEU20 (EVDANCE).
+
+"
+    "👉 <b>Mira TODOS los chollos, busca por modelo, guarda los tuyos y crea alertas gratis:</b>
+"
+    f"🌐 {marca.WEB}
+
+"
     "<i>Enlaces de afiliado. En calidad de Afiliado de Amazon, obtengo ingresos por las compras adscritas "
-    "que cumplen los requisitos. En Jowua y Hansshow también puedo recibir una comisión. "
-    "El precio para ti no sube.</i>"
+    "que cumplen los requisitos. El precio para ti no sube.</i>"
 )
 
 
@@ -187,10 +199,8 @@ def _telegram(token, metodo, cuerpo, cabecera="application/json", datos=None):
 
 
 def _subir_foto(token, chat, imagen, caption, teclado):
-    """Plan B: descarga la foto y la sube a Telegram (cuando Telegram no puede leer la URL)."""
-    req = urllib.request.Request(imagen, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        foto = r.read()
+    """Descarga la foto, le pone el logo y la sube a Telegram."""
+    foto = marca.con_logo(marca.descargar(imagen))  # foto del producto + franja con el logo de Chollesla
     borde = uuid.uuid4().hex
     campos = {"chat_id": chat, "caption": caption, "parse_mode": "HTML", "reply_markup": json.dumps(teclado)}
     crlf = b"\r\n"
@@ -207,16 +217,18 @@ def recortar(texto, n=1024):
 
 
 def enviar(token, chat, texto, url, boton="🛒 Ver en Amazon", imagen=None):
-    """Publica SIEMPRE con foto (sendPhoto). Si no hay foto o no se puede enviar, no publica nada (regla de Vic, 20/11/2026)."""
-    teclado = {"inline_keyboard": [[{"text": boton, "url": url}], [{"text": "📘 Síguenos en Facebook", "url": FACEBOOK}]]}
+    """Publica SIEMPRE con foto (sendPhoto). Si no hay foto o no se puede enviar, no publica nada (regla de Vic, 20/11/2026).
+    La foto lleva el logo de Chollesla y el pie con la web y el canal sale en TODAS las publicaciones."""
+    teclado = {"inline_keyboard": [
+        [{"text": boton, "url": url}],
+        [{"text": "🌐 Más chollos en la web", "url": marca.WEB}, {"text": "✈️ Canal de Telegram", "url": marca.CANAL}],
+        [{"text": "📘 Síguenos en Facebook", "url": FACEBOOK}],
+    ]}
     if not imagen:  # solo el aviso fijo (--aviso) va sin foto
         return _telegram(token, "sendMessage", {"chat_id": chat, "text": texto, "parse_mode": "HTML", "reply_markup": teclado})
-    caption = recortar(texto)
-    res = _telegram(token, "sendPhoto", {"chat_id": chat, "photo": imagen, "caption": caption, "parse_mode": "HTML", "reply_markup": teclado})
-    if not res.get("ok"):
-        print("sendPhoto con URL fallo:", res.get("description"), "-> subo la foto descargada")
-        res = _subir_foto(token, chat, imagen, caption, teclado)
-    return res
+    pie = html.escape(marca.PIE_TEXTO)
+    caption = recortar(texto, 1024 - len(pie) - 2) + chr(10) * 2 + pie
+    return _subir_foto(token, chat, imagen, caption, teclado)
 
 
 def imagen_de(asin):
@@ -281,7 +293,7 @@ def main():
         if "--prueba" in args:
             print(AVISO)
             return
-        print(enviar(token, chat, AVISO, "https://www.amazon.es/")["ok"])
+        print(enviar(token, chat, AVISO, marca.WEB, "🌐 Ver todos los chollos")["ok"])
         return
 
     if "--forzar" not in args and not dentro_de_ventana(env.get("VENTANA", "")):

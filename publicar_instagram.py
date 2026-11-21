@@ -17,6 +17,7 @@ import os
 import random
 import sys
 from traducir import a_espanol
+import marca
 import time
 import urllib.error
 import urllib.parse
@@ -152,8 +153,7 @@ def leyenda(p):
         partes.append("🏷️ Enlace de afiliado de AliExpress: a ti no te cuesta nada más. Revisa la variante y el envío en la ficha.")
     elif tienda == "evdance":
         partes.append("🏷️ Con el código EVEU20 hasta 20 % de descuento en la tienda. Consulta el envío a España en la ficha.")
-    partes.append(f"🛒 Enlace de compra en nuestro canal de Telegram: {CANAL} (enlace en la bio). "
-                  "Un accesorio nuevo cada 30 minutos.")
+    partes.append("🛒 Enlace de compra en la bio y en el canal de Telegram. Un accesorio nuevo cada 30 minutos." + chr(10) * 2 + marca.PIE_TEXTO)
     partes.append("#tesla #teslamodel3 #teslamodely #accesoriostesla #teslaespaña")
     return "\n\n".join(partes)[:2200]
 

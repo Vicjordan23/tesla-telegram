@@ -18,6 +18,7 @@ import random
 import secrets
 import sys
 import time
+import marca
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -64,7 +65,7 @@ def construir(p):
     except Exception:
         opinion = ""
     opinion = opinion.replace("Los compradores destacan", "Compradores:").replace("Los compradores dicen", "Compradores:")
-    final = f"\n\n🛒 {url} (enlace de afiliado)\nMás en Telegram: {CANAL}"
+    final = f"\n\n🛒 {url} (enlace de afiliado)\n{marca.PIE_X}"
     partes = [f"{p.get('emoji', '🔥')} {p['titulo']}", f"✅ {p['modelos']}", opinion]
     while True:
         texto = "\n\n".join(x for x in partes if x) + final
