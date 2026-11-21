@@ -237,6 +237,7 @@ def main():
         if not usuario:
             sys.exit("Sin Instagram profesional vinculado, o al token le faltan los permisos "
                      f"instagram_basic / instagram_content_publish / pages_show_list. Respuesta: {r}")
+    imagen = marca.url_publica_con_logo(imagen, os.environ.get("FB_PAGE_TOKEN") or token)  # foto con el logo de Chollesla
     c = llamar(f"{usuario}/media", {"image_url": imagen, "caption": texto}, token)
     esperar(c["id"], token)
     pub = llamar(f"{usuario}/media_publish", {"creation_id": c["id"]}, token)

@@ -190,6 +190,20 @@ def main():
     pagina, token = os.environ.get("FB_PAGE_ID", ""), os.environ.get("FB_PAGE_TOKEN", "")
     if not pagina or not token:
         sys.exit("Faltan FB_PAGE_ID o FB_PAGE_TOKEN")
+    imagenes = {}
+    for nombre in ("imagenes_ig.json", "imagenes_tesery.json", "imagenes_aliexpress.json"):
+        try:
+            imagenes.update(json.loads((AQUI / nombre).read_text(encoding="utf-8")))
+        except Exception:
+            pass
+    if imagenes.get(asin):  # foto del producto con el logo de Chollesla; el enlace de compra va en el texto
+        try:
+            foto = marca.con_logo(marca.descargar(imagenes[asin]))
+            res = marca.subir_foto_facebook(foto, {"message": f"{texto}\n\n🛒 {url}"}, token, pagina)
+            print("Publicado con foto", asin, str(res)[:120])
+            return
+        except Exception as e:
+            print("Foto con logo no publicada, se usa la tarjeta de enlace:", e)
     datos = urllib.parse.urlencode({"message": texto, "link": url, "access_token": token}).encode()
     try:
         with urllib.request.urlopen(urllib.request.Request(f"{API}/{pagina}/feed", data=datos), timeout=30) as r:
