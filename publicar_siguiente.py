@@ -212,12 +212,12 @@ def enviar(token, chat, texto, url, boton="🛒 Ver en Amazon", imagen=None):
     La foto lleva el logo de Chollesla; botones y pie con la web y el canal salen en TODAS las publicaciones."""
     teclado = {"inline_keyboard": [
         [{"text": boton, "url": url}],
-        [{"text": "🌐 Más chollos en la web", "url": marca.WEB}, {"text": "✈️ Canal de Telegram", "url": marca.CANAL}],
+        [{"text": "🌐 Más chollos en la web", "url": marca.WEB}],
         [{"text": "📘 Síguenos en Facebook", "url": FACEBOOK}],
     ]}
     if not imagen:  # solo el aviso fijo (--aviso) va sin foto
         return _telegram(token, "sendMessage", {"chat_id": chat, "text": texto, "parse_mode": "HTML", "reply_markup": teclado})
-    pie = html.escape(marca.PIE_TEXTO)
+    pie = html.escape(marca.PIE_TELEGRAM)
     caption = recortar(texto, 1024 - len(pie) - 2) + "\n\n" + pie
     return _subir_foto(token, chat, imagen, caption, teclado)
 

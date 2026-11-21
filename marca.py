@@ -15,6 +15,7 @@ WEB_CORTA = WEB.replace("https://", "").replace("http://", "").rstrip("/")
 CANAL_CORTO = "t.me/teslaaccesorios"
 # Linea que cierra TODOS los textos (Telegram, Facebook, Instagram y X)
 PIE_TEXTO = f"🌐 Más chollos: {WEB}\n✈️ Canal de Telegram: {CANAL}"
+PIE_TELEGRAM = f"🌐 Más chollos: {WEB}"  # en Telegram no se enlaza el canal: ya estan dentro
 PIE_X = f"🌐 {WEB}\n✈️ {CANAL}"
 
 
