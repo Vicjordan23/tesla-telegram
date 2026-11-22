@@ -8,7 +8,7 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: "30 7 * * 1"          # lunes 07:30 UTC, despues del buscador de productos; si GitHub no lo lanza, usar el boton
+    - cron: "30 7 * * *"          # cada dia 07:30 UTC (la web importa el catalogo a las 08:30); si GitHub no lo lanza, usar el boton
 
 permissions:
   contents: write                 # para guardar los precios
@@ -31,7 +31,7 @@ jobs:
             git config user.name "github-actions"
             git config user.email "github-actions@users.noreply.github.com"
             git add precios.json precios_tesery.json
-            git commit -m "Actualizar precios (semanal)"
+            git commit -m "Actualizar precios (diario)"
             git push
           else
             echo "Sin cambios en los precios"
