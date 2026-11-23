@@ -14,11 +14,13 @@ import html
 import json
 import os
 import random
+import re
 import sys
 import time
 import urllib.error
 import urllib.request
 import uuid
+import zlib
 from traducir import a_espanol
 import marca
 from datetime import datetime
@@ -71,7 +73,7 @@ def url_producto(asin):
 TIENDAS = ("amazon", "jowua", "hansshow", "tesery", "evdance", "aliexpress")
 # Turno de 134 franjas de 30 min: ciclo de 7 (Amazon, Jowua y Hansshow 2 veces cada una y Tesery 1: comision del 2 %) x19 y EVDANCE 1 sola (envio a Espana caro)
 TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow", "tesery", "aliexpress", "aliexpress") * 15 + ("evdance",)  # 136 franjas: ciclo de 9 (AliExpress 2 de 9, comision ~9 %) x15 y EVDANCE 1 vez
-BOTONES = {"amazon": "🛒 Ver en Amazon", "jowua": "🛒 Ver en Jowua", "hansshow": "🛒 Ver en Hansshow", "tesery": "🛒 Ver en Tesery", "evdance": "🛒 Ver en EVDANCE", "aliexpress": "🛒 Ver en AliExpress"}
+BOTONES = {"amazon": "🛒 Comprar en Amazon", "jowua": "🛒 Comprar en Jowua", "hansshow": "🛒 Comprar en Hansshow", "tesery": "🛒 Comprar en Tesery", "evdance": "🛒 Comprar en EVDANCE", "aliexpress": "🛒 Comprar en AliExpress"}
 
 
 def tienda_de(p):
@@ -123,53 +125,206 @@ def lista_tienda(productos, tienda):
     return lista
 
 
-def linea_precio(p):
-    """Precio FINAL (con el descuento de la tienda) a partir de precios.json (se actualiza cada semana). '' si no hay precio."""
-    d = None
-    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json"):  # Tesery tiene su propio archivo de precios
+def _precios_de(archivos):
+    datos = {}
+    for nombre in archivos:
         try:
-            d = d or json.loads((AQUI / nombre).read_text(encoding="utf-8")).get(p["asin"])
+            datos.update(json.loads((AQUI / nombre).read_text(encoding="utf-8")))
         except Exception:
             pass
+    return datos
+
+
+def _json(nombre):
+    try:
+        return json.loads((AQUI / nombre).read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def eur(c):
+    return f"{c // 100:,}".replace(",", ".") + f",{c % 100:02d} €"
+
+
+def _fecha(f):
+    return f[8:10] + "/" + f[5:7]
+
+
+def _esc(t):
+    return html.escape(t, quote=False)
+
+
+def _final(c, tienda):
+    return int(c * (1 - DESCUENTOS.get(tienda, 0)) + 0.5)
+
+
+def datos_precio(p):
+    """Precio de un producto: {'tienda','p','final','dto','desde','f'} o None. Fuente: precios*.json (los actualiza el workflow Actualizar precios)."""
+    d = _precios_de(("precios.json", "precios_tesery.json", "precios_aliexpress.json")).get(p["asin"])
     if not d:
-        return ""
+        return None
     t = tienda_de(p)
-    dto = DESCUENTOS.get(t, 0)
-    final = int(d["p"] * (1 - dto) + 0.5)
-
-    def eur(c):
-        return f"{c // 100:,}".replace(",", ".") + f",{c % 100:02d} €"
-
-    desde = "Desde " if d.get("d") else ""
-    dia = d["f"][8:10] + "/" + d["f"][5:7]
-    if dto:
-        return f"💶 {desde}{eur(final)} con el código {CODIGOS[t]} (precio en tienda: {eur(d['p'])}; precio del {dia})"
-    return f"💶 {desde}{eur(final)} (precio del {dia}; puede variar)"
+    return {"tienda": t, "p": d["p"], "final": _final(d["p"], t), "dto": DESCUENTOS.get(t, 0), "desde": bool(d.get("d")), "f": d["f"]}
 
 
-def construir(p):
+def _dias(desde, hasta):
+    return (datetime.strptime(hasta, "%Y-%m-%d") - datetime.strptime(desde, "%Y-%m-%d")).days
+
+
+def bajada_real(p, pr, hoy=None):
+    """BAJADA con datos reales: historial_precios.json (lo escribe historial_precios.py tras cada actualizacion de precios).
+    Solo si el precio actual es menor que el anterior guardado, el producto no es 'Desde' (minimo de variantes), la baja se
+    detecto hace <= 7 dias y es de al menos 5 % y 1 EUR. Devuelve {'antes','ahora','pct','f_antes'} (precios FINALES) o None."""
+    h = _json("historial_precios.json").get(p["asin"])
+    if not h or not pr or pr["desde"] or not h.get("ant") or h["p"] != pr["p"] or h["ant"] <= h["p"]:
+        return None
+    hoy = hoy or datetime.utcnow().strftime("%Y-%m-%d")
+    try:
+        dias = _dias(h["fc"], hoy)
+        if _dias(h["fant"], h["fc"]) > 21:  # el precio anterior es demasiado viejo para compararlo
+            return None
+    except Exception:
+        return None
+    antes, ahora = _final(h["ant"], pr["tienda"]), pr["final"]
+    if dias > 7 or antes - ahora < 100 or (antes - ahora) * 100 < 5 * antes:
+        return None
+    return {"antes": antes, "ahora": ahora, "pct": round((antes - ahora) * 100 / antes), "f_antes": h.get("fant") or ""}
+
+
+def es_novedad(p, hoy=None):
+    """Novedad = producto que entro en los precios DESPUES de empezar el historial (campo alta, <= 14 dias)."""
+    alta = _json("historial_precios.json").get(p["asin"], {}).get("alta")
+    if not alta:
+        return False
+    hoy = hoy or datetime.utcnow().strftime("%Y-%m-%d")
+    try:
+        return 0 <= _dias(alta, hoy) <= 14
+    except Exception:
+        return False
+
+
+PACK_RE = re.compile(r"\b(pack|set|kit|juego|combo|lote|bundle|conjunto)\b|\b\d+\s*(piezas|pcs|uds|unidades|pzas)\b", re.I)
+PEDIDOS_RE = re.compile(r"([\d.]+) pedidos seg[uú]n AliExpress", re.I)
+
+
+def tipo_de(p, baja):
+    """bajada (dato real) > novedad (dato real) > opinion (Amazon con resumen en opiniones.json) > pedidos (AliExpress con >=1.000 pedidos segun AliExpress) > pack > chollo."""
+    if baja:
+        return "bajada"
+    if es_novedad(p):
+        return "novedad"
+    t = tienda_de(p)
+    if t == "amazon" and _json("opiniones.json").get(p["asin"]):
+        return "opinion"
+    if t == "aliexpress":
+        m = PEDIDOS_RE.search(p.get("descripcion", ""))
+        if m and int(m.group(1).replace(".", "")) >= 1000:
+            return "pedidos"
+    if PACK_RE.search(p.get("titulo", "")):
+        return "pack"
+    return "chollo"
+
+
+def _var(p, lista):
+    """Variante de plantilla estable por producto (mismo producto = mismo texto en cada ejecucion)."""
+    return lista[zlib.crc32(p["asin"].encode()) % len(lista)]
+
+
+TITULARES = {
+    "bajada": ["🔴🔥 <b>BAJADA DE PRECIO</b> 🔥🔴", "🔴💥 <b>¡HA BAJADO!</b> 💥🔴", "📉🔴 <b>BAJÓ EL PRECIO</b> 🔴📉"],
+    "novedad": ["🟢🆕 <b>NOVEDAD EN CHOLLESLA</b> 🆕🟢", "🟢✨ <b>NUEVO CHOLLO PARA TU TESLA</b> ✨🟢"],
+    "opinion": ["💬🟢 <b>OPINIONES REALES DE COMPRADORES</b> 🟢💬", "🗣️✅ <b>LO CUENTAN QUIENES YA LO TIENEN</b> ✅🗣️"],
+    "pedidos": ["🏆🟢 <b>DE LOS MÁS PEDIDOS</b> 🟢🏆", "🏆🔥 <b>MUCHOS PEDIDOS EN ALIEXPRESS</b> 🔥🏆"],
+    "pack": ["🎁🟡 <b>PACK CHOLLAZO</b> 🟡🎁", "📦🔥 <b>TODO EN UNO, AL MEJOR PRECIO</b> 🔥📦"],
+    "chollo": ["🔥🟡 <b>CHOLLO PARA TU TESLA</b> 🟡🔥", "💥✅ <b>CHOLLAZO DEL MOMENTO</b> ✅💥", "🟡🔥 <b>OFERTA PARA TU MODEL 3 / Y</b> 🔥🟡"],
+}
+AVISO_AMAZON = "En calidad de Afiliado de Amazon, obtengo ingresos por las compras adscritas que cumplen los requisitos."
+
+
+def _semaforo(tienda):
+    """Semaforo del descuento de la tienda: verde 20 %, amarillo 5 %, nada sin codigo."""
+    dto = DESCUENTOS.get(tienda, 0)
+    return "🟢" if dto >= 0.2 else ("🟡" if dto > 0 else "")
+
+
+def bloque_precio(pr, baja):
+    """Lineas de precio con el PRECIO FINAL destacado (tras el descuento de la tienda)."""
+    t, desde = pr["tienda"], ("Desde " if pr["desde"] else "")
+    lineas = []
+    if baja:
+        lineas.append(
+            f"📉 Antes <s>{eur(baja['antes'])}</s>" + (f" ({_fecha(baja['f_antes'])})" if baja["f_antes"] else "")
+            + f" ➜ ahora <b>{eur(baja['ahora'])}</b> (-{baja['pct']} %, ahorras {eur(baja['antes'] - baja['ahora'])})"
+        )
+    if pr["dto"]:
+        lineas.append(f"💶 PRECIO FINAL: <s>{eur(pr['p'])}</s> ➜ <b>{desde}{eur(pr['final'])}</b>")
+        lineas.append(f"{_semaforo(t)} -{round(pr['dto'] * 100)} % con el código <code>{CODIGOS[t]}</code> (toca para copiar) · ahorras {eur(pr['p'] - pr['final'])}")
+    elif not baja:
+        lineas.append(f"💶 PRECIO: <b>{desde}{eur(pr['final'])}</b>")
+    else:
+        lineas.append(f"💶 PRECIO FINAL: <b>{eur(pr['final'])}</b>")
+    return "\n".join(lineas)
+
+
+def nota_tienda(t):
+    if t == "jowua":
+        return "🟡 Con este enlace el 5 % se aplica solo."
+    if t in ("hansshow", "tesery"):
+        return "✍️ Pon el código al pagar."
+    if t == "evdance":
+        return "🚚 Tienda de la UE: mira el envío a España en la ficha antes de pagar."
+    if t == "aliexpress":
+        return "🚚 Revisa la variante y el envío en la ficha. Enlace de afiliado: a ti no te cuesta más."
+    return ""
+
+
+def construir(p, max_len=None):
+    """Mensaje de chollo en HTML de Telegram: titular con semaforo segun el tipo (bajada / novedad / opinion / pack / chollo),
+    precio final destacado, codigo de la tienda y modelos. Todo viene de los JSON: nada inventado.
+    max_len = limite del pie de foto (1024 menos el pie): se acorta la descripcion y, si hace falta, la opinion y el titulo."""
     tienda = tienda_de(p)
     url = url_producto(p["asin"]) if tienda == "amazon" else p["url"]
-    texto = (
-        f"{p.get('emoji', '🔥')} <b>{html.escape(a_espanol(p['titulo']))}</b>\n\n"
-        f"{html.escape(a_espanol(p['descripcion']))}\n\n"
-        f"✅ {html.escape(p['modelos'])}"
-    )
-    lp = linea_precio(p)
-    if lp:
-        texto += "\n\n" + lp
-    if tienda == "jowua":  # tienda Jowua: descuento (sin precios) y aviso de afiliado
-        texto += (
-            "\n\n🏷️ 5 % de descuento con el código ACCESORIOSTESLA (con este enlace se aplica solo)"
-        )
-    elif tienda == "hansshow":  # Hansshow: cupon de afiliado de Victor (el enlace lleva su codigo bg_ref)
-        texto += "\n\n🏷️ 20 % de descuento con el código VICTOR al pagar"
-    elif tienda == "tesery":  # Tesery (GoAffPro): codigo de Vic, 5 %
-        texto += "\n\n🏷️ 5 % de descuento con el código ACCESORIOSTESLA al pagar"
-    elif tienda == "evdance":  # EVDANCE (Awin): codigo de la tienda UE
-        texto += "\n\n🏷️ Con el código EVEU20 hasta 20 % de descuento en la tienda. Consulta el envío a España en la ficha."
-    elif tienda == "aliexpress":  # AliExpress (programa de afiliados): sin codigo, envio a Espana
-        texto += "\n\n🏷️ Enlace de afiliado de AliExpress: a ti no te cuesta nada más. Revisa la variante y el envío en la ficha."
+    pr = datos_precio(p)
+    baja = bajada_real(p, pr)
+    titular = _var(p, TITULARES[tipo_de(p, baja)])
+    titulo_es = html.unescape(a_espanol(p["titulo"]))  # algunos titulos de tienda traen &amp; ya escapado
+    desc = re.sub(r",? bien valorado en Amazon\.es \(\d+ estrellas o más\)", "", html.unescape(a_espanol(p["descripcion"]))).strip()  # sin notas ni estrellas (regla de Vic)
+    if desc in ("Accesorio para tu Tesla.", "Accesorio para tu Tesla"):  # frase generica sin informacion
+        desc = ""
+    modelos = _esc(p["modelos"])
+    opinion = _json("opiniones.json").get(p["asin"], "") if tienda == "amazon" else ""
+    notas = []
+    if pr:
+        notas.append(f"<i>Precio del {_fecha(pr['f'])}; puede variar.</i>")
+    if tienda == "amazon":
+        notas.append(f"<i>{AVISO_AMAZON}</i>")
+
+    def armar(titulo, desc_txt, op_txt):
+        partes = [titular, f"{p.get('emoji', '🔥')} <b>{_esc(titulo)}</b>"]
+        if pr:
+            partes.append(bloque_precio(pr, baja))
+        if desc_txt:
+            partes.append(_esc(desc_txt))
+        partes.append(f"✅ {modelos}")
+        if op_txt:
+            partes.append(f"💬 Lo que dicen los compradores en Amazon: {_esc(op_txt)}")
+        if nota_tienda(tienda):
+            partes.append(nota_tienda(tienda))
+        return "\n\n".join(partes + notas)
+
+    texto = armar(titulo_es, desc, opinion)
+    if max_len and len(texto) > max_len:
+        quitar = len(texto) - max_len
+        desc = recortar(desc, len(desc) - quitar - 2) if len(desc) - quitar - 2 > 20 else ""
+        texto = armar(titulo_es, desc, opinion)
+    if max_len and len(texto) > max_len:
+        quitar = len(texto) - max_len
+        opinion = recortar(opinion, len(opinion) - quitar - 2) if len(opinion) - quitar - 2 > 20 else ""
+        texto = armar(titulo_es, desc, opinion)
+    if max_len and len(texto) > max_len:
+        quitar = len(texto) - max_len
+        titulo_es = recortar(titulo_es, max(20, len(titulo_es) - quitar - 2))
+        texto = armar(titulo_es, desc, opinion)
     return texto, url
 
 
@@ -207,18 +362,24 @@ def recortar(texto, n=1024):
     return texto if len(texto) <= n else texto[: n - 1].rsplit(" ", 1)[0] + "…"
 
 
-def enviar(token, chat, texto, url, boton="🛒 Ver en Amazon", imagen=None):
+PIE = html.escape(marca.PIE_TELEGRAM, quote=False)
+LIMITE_TEXTO = 1024 - len(PIE) - 2  # pie de foto de Telegram: 1024 caracteres con el pie
+
+
+def enviar(token, chat, texto, url, boton="🛒 Comprar en Amazon", imagen=None):
     """Publica SIEMPRE con foto (sendPhoto). Si no hay foto o no se puede enviar, no publica nada (regla de Vic, 20/11/2026).
-    La foto lleva el logo de Chollesla; botones y pie con la web y el canal salen en TODAS las publicaciones."""
+    La foto lleva el logo de Chollesla. Botones: Comprar (enlace de afiliado de SU tienda) y Mas chollos (chollesla.es) + Facebook.
+    El pie con la web va en el texto de TODAS las publicaciones. 'texto' ya viene acortado por construir(max_len=LIMITE_TEXTO)."""
     teclado = {"inline_keyboard": [
         [{"text": boton, "url": url}],
-        [{"text": "🌐 Más chollos en la web", "url": marca.WEB}],
+        [{"text": "🔥 Más chollos en chollesla.es", "url": marca.WEB}],
         [{"text": "📘 Síguenos en Facebook", "url": FACEBOOK}],
     ]}
     if not imagen:  # solo el aviso fijo (--aviso) va sin foto
         return _telegram(token, "sendMessage", {"chat_id": chat, "text": texto, "parse_mode": "HTML", "reply_markup": teclado})
-    pie = html.escape(marca.PIE_TELEGRAM)
-    caption = recortar(texto, 1024 - len(pie) - 2) + "\n\n" + pie
+    caption = texto + "\n\n" + PIE  # construir() ya dejo el texto dentro de LIMITE_TEXTO (no recortar aqui: partiria las etiquetas HTML)
+    if len(caption) > 1024:
+        raise ValueError(f"Pie de foto de {len(caption)} caracteres (> 1024)")
     return _subir_foto(token, chat, imagen, caption, teclado)
 
 
@@ -298,7 +459,7 @@ def main():
         asin, nuevo_estado, f_estado = siguiente(productos)
     asin = os.environ.get("PRODUCTO_FORZADO") or asin  # prueba manual de un producto concreto
     p = next(x for x in productos if x["asin"] == asin)
-    texto, url = construir(p)
+    texto, url = construir(p, LIMITE_TEXTO)
     imagen = imagen_de(asin)
 
     if "--prueba" in args:

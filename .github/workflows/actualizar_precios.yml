@@ -25,12 +25,15 @@ jobs:
           CREATORS_API_CREDENTIAL_SECRET: ${{ secrets.CREATORS_API_CREDENTIAL_SECRET }}
           APLICAR: ${{ (github.event_name == 'schedule' || inputs.aplicar) && '1' || '' }}
         run: python3 actualizar_precios_web.py
+      - name: Registrar historial de precios (para detectar bajadas reales)
+        if: github.event_name == 'schedule' || inputs.aplicar
+        run: python3 historial_precios.py
       - name: Guardar cambios
         run: |
-          if [ -n "$(git status --porcelain precios.json precios_tesery.json)" ]; then
+          if [ -n "$(git status --porcelain precios.json precios_tesery.json historial_precios.json)" ]; then
             git config user.name "github-actions"
             git config user.email "github-actions@users.noreply.github.com"
-            git add precios.json precios_tesery.json
+            git add precios.json precios_tesery.json historial_precios.json
             git commit -m "Actualizar precios (diario)"
             git push
           else
