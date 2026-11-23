@@ -274,7 +274,7 @@ def nota_tienda(t):
     if t == "evdance":
         return "🚚 Tienda de la UE: mira el envío a España en la ficha antes de pagar."
     if t == "aliexpress":
-        return "🚚 Revisa la variante y el envío en la ficha. Enlace de afiliado: a ti no te cuesta más."
+        return "🚚 Revisa la variante y el envío en la ficha."
     return ""
 
 
@@ -296,8 +296,7 @@ def construir(p, max_len=None):
     notas = []
     if pr:
         notas.append(f"<i>Precio del {_fecha(pr['f'])}; puede variar.</i>")
-    if tienda == "amazon":
-        notas.append(f"<i>{AVISO_AMAZON}</i>")
+# aviso de afiliado: va en la descripcion del canal (Vic, 23/11/2026), no en cada post
 
     def armar(titulo, desc_txt, op_txt):
         partes = [titular, f"{p.get('emoji', '🔥')} <b>{_esc(titulo)}</b>"]
