@@ -19,6 +19,15 @@ PIE_TELEGRAM = f"🌐 Más chollos: {WEB}"  # en Telegram no se enlaza el canal:
 PIE_X = f"🌐 {WEB}\n✈️ {CANAL}"
 
 
+def web_utm(canal, campana="post"):
+    """Enlace a la web con UTM para medir de que canal viene cada visita (GA4 lo agrupa solo)."""
+    return f"{WEB.rstrip('/')}/?utm_source={canal}&utm_medium=social&utm_campaign={campana}"
+
+
+# Facebook: el enlace de la web es clicable, asi que lleva UTM. Instagram no (el texto no es clicable)
+PIE_FACEBOOK = f"🌐 Más chollos: {web_utm('facebook')}\n✈️ Canal de Telegram: {CANAL}"
+
+
 def con_logo(foto_bytes):
     """Devuelve la foto (JPEG) con una franja inferior blanca con el logo de Chollesla.
     Si algo falla devuelve la foto original: una publicacion nunca se pierde por el logo."""

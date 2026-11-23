@@ -35,7 +35,7 @@ AVISO = (
     "🏪 Amazon.es, AliExpress, Jowua, Hansshow, Tesery y EVDANCE, todo en un sitio.\n"
     "🏷️ Códigos de descuento: ACCESORIOSTESLA (Jowua y Tesery), VICTOR (Hansshow) y EVEU20 (EVDANCE).\n\n"
     "👉 <b>Mira TODOS los chollos, busca por modelo, guarda los tuyos y crea alertas gratis:</b>\n"
-    f"🌐 {marca.WEB}\n\n"
+    f"🌐 {marca.web_utm('telegram', 'aviso')}\n\n"
     "<i>Enlaces de afiliado. En calidad de Afiliado de Amazon, obtengo ingresos por las compras adscritas "
     "que cumplen los requisitos. El precio para ti no sube.</i>"
 )
@@ -361,8 +361,10 @@ def recortar(texto, n=1024):
     return texto if len(texto) <= n else texto[: n - 1].rsplit(" ", 1)[0] + "…"
 
 
-PIE = html.escape(marca.PIE_TELEGRAM, quote=False)
-LIMITE_TEXTO = 1024 - len(PIE) - 2  # pie de foto de Telegram: 1024 caracteres con el pie
+# El pie es un enlace con UTM (anclado a «chollesla.es»): para el limite de 1024 cuenta solo el texto visible
+PIE_VISIBLE = f"🌐 Más chollos: {marca.WEB_CORTA}"
+PIE = f'🌐 Más chollos: <a href="{html.escape(marca.web_utm("telegram", "pie"), quote=True)}">{html.escape(marca.WEB_CORTA, quote=False)}</a>'
+LIMITE_TEXTO = 1024 - len(PIE_VISIBLE) - 2  # pie de foto de Telegram: 1024 caracteres con el pie
 
 
 def enviar(token, chat, texto, url, boton="🛒 Comprar en Amazon", imagen=None):
@@ -371,14 +373,14 @@ def enviar(token, chat, texto, url, boton="🛒 Comprar en Amazon", imagen=None)
     El pie con la web va en el texto de TODAS las publicaciones. 'texto' ya viene acortado por construir(max_len=LIMITE_TEXTO)."""
     teclado = {"inline_keyboard": [
         [{"text": boton, "url": url}],
-        [{"text": "🔥 Más chollos en chollesla.es", "url": marca.WEB}],
+        [{"text": "🔥 Más chollos en chollesla.es", "url": marca.web_utm("telegram", "boton")}],
         [{"text": "📘 Síguenos en Facebook", "url": FACEBOOK}],
     ]}
     if not imagen:  # solo el aviso fijo (--aviso) va sin foto
         return _telegram(token, "sendMessage", {"chat_id": chat, "text": texto, "parse_mode": "HTML", "reply_markup": teclado})
     caption = texto + "\n\n" + PIE  # construir() ya dejo el texto dentro de LIMITE_TEXTO (no recortar aqui: partiria las etiquetas HTML)
-    if len(caption) > 1024:
-        raise ValueError(f"Pie de foto de {len(caption)} caracteres (> 1024)")
+    if len(texto) + 2 + len(PIE_VISIBLE) > 1024:  # Telegram cuenta el texto visible, no el HTML del enlace del pie
+        raise ValueError(f"Pie de foto de {len(texto) + 2 + len(PIE_VISIBLE)} caracteres (> 1024)")
     return _subir_foto(token, chat, imagen, caption, teclado)
 
 
@@ -444,7 +446,7 @@ def main():
         if "--prueba" in args:
             print(AVISO)
             return
-        print(enviar(token, chat, AVISO, marca.WEB, "🌐 Ver todos los chollos")["ok"])
+        print(enviar(token, chat, AVISO, marca.web_utm("telegram", "aviso"), "🌐 Ver todos los chollos")["ok"])
         return
 
     if "--forzar" not in args and not dentro_de_ventana(env.get("VENTANA", "")):

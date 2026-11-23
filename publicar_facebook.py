@@ -162,7 +162,7 @@ def construir(p):
         f"✅ {p['modelos']}\n\n"
         f"{bloque}"
         f"{aviso}"
-        f"{marca.PIE_TEXTO}"
+        f"{marca.PIE_FACEBOOK}"
     )
     return texto, url
 
