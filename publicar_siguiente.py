@@ -294,8 +294,6 @@ def construir(p, max_len=None):
     modelos = _esc(p["modelos"])
     opinion = _json("opiniones.json").get(p["asin"], "") if tienda == "amazon" else ""
     notas = []
-    if pr:
-        notas.append(f"<i>Precio del {_fecha(pr['f'])}; puede variar.</i>")
 # aviso de afiliado: va en la descripcion del canal (Vic, 23/11/2026), no en cada post
 
     def armar(titulo, desc_txt, op_txt):

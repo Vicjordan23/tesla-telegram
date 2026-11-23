@@ -125,8 +125,8 @@ def linea_precio(p):
     desde = "Desde " if d.get("d") else ""
     dia = d["f"][8:10] + "/" + d["f"][5:7]
     if dto:
-        return f"💶 {desde}{eur(final)} con el código {CODIGOS[t]} (precio en tienda: {eur(d['p'])}; precio del {dia})"
-    return f"💶 {desde}{eur(final)} (precio del {dia}; puede variar)"
+        return f"💶 {desde}{eur(final)} con el código {CODIGOS[t]} (precio en tienda: {eur(d['p'])})"
+    return f"💶 {desde}{eur(final)}"
 
 
 def leyenda(p):
