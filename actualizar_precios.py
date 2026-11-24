@@ -43,7 +43,7 @@ def cargar(nombre):
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     cat = {}
-    for n in ("productos.json", "productos_jowua.json", "productos_hansshow.json", "productos_evdance.json"):
+    for n in ("productos.json", "productos_jowua.json", "productos_hansshow.json"):
         if (AQUI / n).exists():
             for p in cargar(n):
                 if not p.get("pausado"):

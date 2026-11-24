@@ -32,8 +32,8 @@ FACEBOOK = "https://www.facebook.com/profile.php?id=61596316649956"
 AVISO = (
     "🔥 <b>CHOLLESLA: los chollos para tu Tesla</b> 🔥\n\n"
     "⚡ Un accesorio nuevo cada 30 minutos para Model 3 y Model Y, con el precio final ya rebajado.\n"
-    "🏪 Amazon.es, AliExpress, Jowua, Hansshow, Tesery y EVDANCE, todo en un sitio.\n"
-    "🏷️ Códigos de descuento: ACCESORIOSTESLA (Jowua y Tesery), VICTOR (Hansshow) y EVEU20 (EVDANCE).\n\n"
+    "🏪 Amazon.es, AliExpress, Temu, Jowua, Hansshow y Tesery, todo en un sitio.\n"
+    "🏷️ Códigos de descuento: ACCESORIOSTESLA (Jowua y Tesery) y VICTOR (Hansshow).\n\n"
     "👉 <b>Mira TODOS los chollos, busca por modelo, guarda los tuyos y crea alertas gratis:</b>\n"
     f"🌐 {marca.web_utm('telegram', 'aviso')}\n\n"
     "<i>Enlaces de afiliado. En calidad de Afiliado de Amazon, obtengo ingresos por las compras adscritas "
@@ -70,18 +70,18 @@ def url_producto(asin):
     return f"https://www.amazon.es/dp/{asin}?tag={TAG}"
 
 
-TIENDAS = ("amazon", "jowua", "hansshow", "tesery", "evdance", "aliexpress", "temu")
-# Turno de 134 franjas de 30 min: ciclo de 7 (Amazon, Jowua y Hansshow 2 veces cada una y Tesery 1: comision del 2 %) x19 y EVDANCE 1 sola (envio a Espana caro)
-TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow", "tesery", "aliexpress", "aliexpress", "temu") * 15 + ("evdance",)  # 151 franjas: ciclo de 9 (AliExpress 2 de 9, comision ~9 %) x15 y EVDANCE 1 vez
-BOTONES = {"amazon": "🛒 Comprar en Amazon", "jowua": "🛒 Comprar en Jowua", "hansshow": "🛒 Comprar en Hansshow", "tesery": "🛒 Comprar en Tesery", "evdance": "🛒 Comprar en EVDANCE", "aliexpress": "🛒 Comprar en AliExpress", "temu": "🛒 Comprar en Temu"}
+TIENDAS = ("amazon", "jowua", "hansshow", "tesery", "aliexpress", "temu")
+# Turno de 134 franjas de 30 min: ciclo de 7 (Amazon, Jowua y Hansshow 2 veces cada una y Tesery 1: comision del 2 %) x19
+TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow", "tesery", "aliexpress", "aliexpress", "temu") * 15  # 150 franjas: ciclo de 9 (AliExpress 2 de 9, comision ~9 %) x15
+BOTONES = {"amazon": "🛒 Comprar en Amazon", "jowua": "🛒 Comprar en Jowua", "hansshow": "🛒 Comprar en Hansshow", "tesery": "🛒 Comprar en Tesery", "aliexpress": "🛒 Comprar en AliExpress", "temu": "🛒 Comprar en Temu"}
 
 
 def tienda_de(p):
     return p.get("tienda", "amazon")
 
 
-DESCUENTOS = {"amazon": 0.0, "jowua": 0.05, "hansshow": 0.20, "tesery": 0.05, "evdance": 0.20, "aliexpress": 0.0, "temu": 0.0}  # descuento de cada tienda con su codigo
-CODIGOS = {"jowua": "ACCESORIOSTESLA", "hansshow": "VICTOR", "tesery": "ACCESORIOSTESLA", "evdance": "EVEU20"}
+DESCUENTOS = {"amazon": 0.0, "jowua": 0.05, "hansshow": 0.20, "tesery": 0.05, "aliexpress": 0.0, "temu": 0.0}  # descuento de cada tienda con su codigo
+CODIGOS = {"jowua": "ACCESORIOSTESLA", "hansshow": "VICTOR", "tesery": "ACCESORIOSTESLA"}
 
 
 def con_precio(productos):
@@ -271,8 +271,6 @@ def nota_tienda(t):
         return "🟡 Con este enlace el 5 % se aplica solo."
     if t in ("hansshow", "tesery"):
         return "✍️ Pon el código al pagar."
-    if t == "evdance":
-        return "🚚 Tienda de la UE: mira el envío a España en la ficha antes de pagar."
     if t == "aliexpress":
         return "🚚 Revisa la variante y el envío en la ficha."
     if t == "temu":
@@ -406,7 +404,7 @@ def siguiente_sin_estado(productos):
     pos = franja % len(turno)
     tienda = turno[pos]
     lista = lista_tienda(productos, tienda)  # los caros (>= mediana de la tienda) salen el doble
-    k = (franja // len(turno)) * turno.count(tienda) + turno[:pos].count(tienda)  # EVDANCE pesa 1/7 (envio caro a Espana)
+    k = (franja // len(turno)) * turno.count(tienda) + turno[:pos].count(tienda)
     return lista[k % len(lista)]
 
 
@@ -435,7 +433,7 @@ def main():
         if os.environ.get(k):
             env[k] = os.environ[k]
     productos = json.loads((AQUI / "productos.json").read_text(encoding="utf-8"))
-    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_tesery.json", "productos_evdance.json", "productos_aliexpress.json", "productos_temu.json"):  # otras tiendas de afiliado
+    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_tesery.json", "productos_aliexpress.json", "productos_temu.json"):  # otras tiendas de afiliado
         extra = AQUI / nombre
         if extra.exists():
             productos += json.loads(extra.read_text(encoding="utf-8"))

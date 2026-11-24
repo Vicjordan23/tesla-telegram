@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Actualiza los precios SIN navegador: lee los precios de cada tienda por internet y reescribe
-precios.json (Amazon, Jowua, Hansshow, EVDANCE) y precios_tesery.json (Tesery).
+precios.json (Amazon, Jowua, Hansshow) y precios_tesery.json (Tesery).
 
 Pensado para GitHub Actions (workflow actualizar_precios.yml), una vez por semana (regla de Vic, 16/11/2026:
 todos los posts llevan precio final con el descuento de la tienda y se actualiza cada semana).
@@ -8,7 +8,6 @@ todos los posts llevan precio final con el descuento de la tienda y se actualiza
 Fuentes:
   Jowua, Hansshow, Tesery  -> <tienda>/es-es/products.json (EUR). Se cruza por id con <tienda>/products.json
                               porque en es-es los handles pueden venir traducidos.
-  EVDANCE                  -> eu.evdances.com/es/products.json
   Amazon.es                -> Creators API getItems (offersV2.listings.price). Necesita los secretos
                               CREATORS_API_CREDENTIAL_ID / CREATORS_API_CREDENTIAL_SECRET.
 Formato: {"<id>": {"p": centimos (precio de lista, sin codigo), "d": 1 si varias variantes con distinto precio, "f": "AAAA-MM-DD"}}
@@ -37,9 +36,8 @@ TIENDAS_WEB = {  # tienda -> (base con idioma es-es para precios en EUR, base po
     "jowua": ("https://www.jowua-life.com/es-es", "https://www.jowua-life.com"),
     "hansshow": ("https://www.hansshow.com/es-es", "https://www.hansshow.com"),
     "tesery": ("https://www.tesery.com/es-es", "https://www.tesery.com"),
-    "evdance": ("https://eu.evdances.com/es", None),
 }
-CATALOGOS = ("productos.json", "productos_jowua.json", "productos_hansshow.json", "productos_tesery.json", "productos_evdance.json")
+CATALOGOS = ("productos.json", "productos_jowua.json", "productos_hansshow.json", "productos_tesery.json")
 
 
 def get_json(url, intentos=5):
@@ -107,8 +105,6 @@ def precios_shopify(tienda):
 
 def handle_de(p):
     t = p.get("tienda", "amazon")
-    if t == "evdance":
-        return p["asin"][len("EVDANCE-"):]
     if t == "hansshow":
         return p["asin"][len("HANSSHOW-"):]
     if t == "tesery":

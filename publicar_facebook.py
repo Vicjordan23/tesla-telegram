@@ -30,9 +30,9 @@ AQUI = Path(__file__).resolve().parent
 TAG = "teslafacebook-21"  # ID de seguimiento de Amazon propio de este canal (24/11/2026): sus clics y ventas salen por separado en el informe de Afiliados
 CANAL = "https://t.me/teslaaccesorios"
 API = "https://graph.facebook.com/v21.0"
-TIENDAS = ("amazon", "jowua", "hansshow", "tesery", "evdance", "aliexpress", "temu")
-# Turno de 134 franjas de 30 min: ciclo de 7 (Amazon, Jowua y Hansshow 2 veces cada una y Tesery 1: comision del 2 %) x19 y EVDANCE 1 sola (envio a Espana caro)
-TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow", "tesery", "aliexpress", "aliexpress", "temu") * 15 + ("evdance",)  # 151 franjas: ciclo de 9 (AliExpress 2 de 9, comision ~9 %) x15 y EVDANCE 1 vez
+TIENDAS = ("amazon", "jowua", "hansshow", "tesery", "aliexpress", "temu")
+# Turno de 134 franjas de 30 min: ciclo de 7 (Amazon, Jowua y Hansshow 2 veces cada una y Tesery 1: comision del 2 %) x19
+TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow", "tesery", "aliexpress", "aliexpress", "temu") * 15  # 150 franjas: ciclo de 9 (AliExpress 2 de 9, comision ~9 %) x15
 
 
 def dentro_de_ventana(texto):
@@ -55,7 +55,7 @@ def elegir(productos):
     pos = franja % len(turno)
     tienda = turno[pos]
     lista = lista_tienda(productos, tienda)  # los caros (>= mediana de la tienda) salen el doble
-    k = (franja // len(turno)) * turno.count(tienda) + turno[:pos].count(tienda)  # EVDANCE pesa 1/7 (envio caro a Espana)
+    k = (franja // len(turno)) * turno.count(tienda) + turno[:pos].count(tienda)
     return lista[k % len(lista)]
 
 
@@ -63,8 +63,8 @@ def tienda_de(p):
     return p.get("tienda", "amazon")
 
 
-DESCUENTOS = {"amazon": 0.0, "jowua": 0.05, "hansshow": 0.20, "tesery": 0.05, "evdance": 0.20, "aliexpress": 0.0, "temu": 0.0}  # descuento de cada tienda con su codigo
-CODIGOS = {"jowua": "ACCESORIOSTESLA", "hansshow": "VICTOR", "tesery": "ACCESORIOSTESLA", "evdance": "EVEU20"}
+DESCUENTOS = {"amazon": 0.0, "jowua": 0.05, "hansshow": 0.20, "tesery": 0.05, "aliexpress": 0.0, "temu": 0.0}  # descuento de cada tienda con su codigo
+CODIGOS = {"jowua": "ACCESORIOSTESLA", "hansshow": "VICTOR", "tesery": "ACCESORIOSTESLA"}
 
 
 def con_precio(productos):
@@ -150,8 +150,6 @@ def construir(p):
         aviso = "🏷️ 20 % de descuento con el código VICTOR al pagar.\n"
     elif tienda == "tesery":  # Tesery (GoAffPro): codigo de Vic, 5 %
         aviso = "🏷️ 5 % de descuento con el código ACCESORIOSTESLA al pagar.\n"
-    elif tienda == "evdance":  # EVDANCE (Awin)
-        aviso = "🏷️ Con el código EVEU20 hasta 20 % de descuento en la tienda. Consulta el envío a España en la ficha.\n"
     elif tienda == "aliexpress":  # AliExpress (afiliados)
         aviso = "Enlace de afiliado de AliExpress: a ti no te cuesta nada más. Revisa la variante y el envío en la ficha.\n"
     elif tienda == "temu":  # Temu (afiliados)
@@ -174,7 +172,7 @@ def main():
         sys.stdout.reconfigure(encoding="utf-8")
     args = set(sys.argv[1:])
     productos = json.loads((AQUI / "productos.json").read_text(encoding="utf-8"))
-    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_tesery.json", "productos_evdance.json", "productos_aliexpress.json", "productos_temu.json"):  # otras tiendas de afiliado
+    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_tesery.json", "productos_aliexpress.json", "productos_temu.json"):  # otras tiendas de afiliado
         extra = AQUI / nombre
         if extra.exists():
             productos += json.loads(extra.read_text(encoding="utf-8"))
