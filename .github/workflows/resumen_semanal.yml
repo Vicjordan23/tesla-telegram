@@ -1,0 +1,16 @@
+name: Resumen semanal en Telegram
+
+on:
+  workflow_dispatch:
+
+jobs:
+  resumen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publicar el Top de la semana
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python3 resumen_semanal.py

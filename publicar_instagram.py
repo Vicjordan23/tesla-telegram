@@ -30,7 +30,7 @@ API = "https://graph.facebook.com/v21.0"
 CANAL = "t.me/teslaaccesorios"
 TIENDAS = ("amazon", "jowua", "hansshow", "tesery", "aliexpress", "temu")
 # Turno de 134 franjas de 30 min: ciclo de 7 (Amazon, Jowua y Hansshow 2 veces cada una y Tesery 1: comision del 2 %) x19
-TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow", "tesery", "aliexpress", "aliexpress", "temu") * 15  # 150 franjas: ciclo de 9 (AliExpress 2 de 9, comision ~9 %) x15
+TURNO = ("amazon", "aliexpress", "jowua", "hansshow", "aliexpress", "amazon", "hansshow", "aliexpress", "jowua", "temu", "amazon", "aliexpress", "jowua", "hansshow", "aliexpress", "amazon", "hansshow", "aliexpress", "jowua", "tesery") * 7  # 140 franjas, ciclo de 20: AliExpress 6 (~9 %), Amazon/Jowua/Hansshow 4, Temu 1, Tesery 1 (2 %). 24/11: mas peso a comision alta
 
 
 def dentro_de_ventana(texto):
