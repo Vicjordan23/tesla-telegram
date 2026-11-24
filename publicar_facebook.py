@@ -27,7 +27,7 @@ from datetime import datetime
 from pathlib import Path
 
 AQUI = Path(__file__).resolve().parent
-TAG = "teslaaccesorios-21"
+TAG = "teslafacebook-21"  # ID de seguimiento de Amazon propio de este canal (24/11/2026): sus clics y ventas salen por separado en el informe de Afiliados
 CANAL = "https://t.me/teslaaccesorios"
 API = "https://graph.facebook.com/v21.0"
 TIENDAS = ("amazon", "jowua", "hansshow", "tesery", "evdance", "aliexpress", "temu")

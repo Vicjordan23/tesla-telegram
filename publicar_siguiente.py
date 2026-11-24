@@ -27,7 +27,7 @@ from datetime import datetime
 from pathlib import Path
 
 AQUI = Path(__file__).resolve().parent
-TAG = "teslaaccesorios-21"
+TAG = "teslatelegram-21"  # ID de seguimiento de Amazon propio de este canal (24/11/2026): sus clics y ventas salen por separado en el informe de Afiliados
 FACEBOOK = "https://www.facebook.com/profile.php?id=61596316649956"
 AVISO = (
     "🔥 <b>CHOLLESLA: los chollos para tu Tesla</b> 🔥\n\n"
