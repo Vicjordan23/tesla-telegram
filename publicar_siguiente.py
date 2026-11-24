@@ -70,24 +70,24 @@ def url_producto(asin):
     return f"https://www.amazon.es/dp/{asin}?tag={TAG}"
 
 
-TIENDAS = ("amazon", "jowua", "hansshow", "tesery", "evdance", "aliexpress")
+TIENDAS = ("amazon", "jowua", "hansshow", "tesery", "evdance", "aliexpress", "temu")
 # Turno de 134 franjas de 30 min: ciclo de 7 (Amazon, Jowua y Hansshow 2 veces cada una y Tesery 1: comision del 2 %) x19 y EVDANCE 1 sola (envio a Espana caro)
-TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow", "tesery", "aliexpress", "aliexpress") * 15 + ("evdance",)  # 136 franjas: ciclo de 9 (AliExpress 2 de 9, comision ~9 %) x15 y EVDANCE 1 vez
-BOTONES = {"amazon": "🛒 Comprar en Amazon", "jowua": "🛒 Comprar en Jowua", "hansshow": "🛒 Comprar en Hansshow", "tesery": "🛒 Comprar en Tesery", "evdance": "🛒 Comprar en EVDANCE", "aliexpress": "🛒 Comprar en AliExpress"}
+TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow", "tesery", "aliexpress", "aliexpress", "temu") * 15 + ("evdance",)  # 151 franjas: ciclo de 9 (AliExpress 2 de 9, comision ~9 %) x15 y EVDANCE 1 vez
+BOTONES = {"amazon": "🛒 Comprar en Amazon", "jowua": "🛒 Comprar en Jowua", "hansshow": "🛒 Comprar en Hansshow", "tesery": "🛒 Comprar en Tesery", "evdance": "🛒 Comprar en EVDANCE", "aliexpress": "🛒 Comprar en AliExpress", "temu": "🛒 Comprar en Temu"}
 
 
 def tienda_de(p):
     return p.get("tienda", "amazon")
 
 
-DESCUENTOS = {"amazon": 0.0, "jowua": 0.05, "hansshow": 0.20, "tesery": 0.05, "evdance": 0.20, "aliexpress": 0.0}  # descuento de cada tienda con su codigo
+DESCUENTOS = {"amazon": 0.0, "jowua": 0.05, "hansshow": 0.20, "tesery": 0.05, "evdance": 0.20, "aliexpress": 0.0, "temu": 0.0}  # descuento de cada tienda con su codigo
 CODIGOS = {"jowua": "ACCESORIOSTESLA", "hansshow": "VICTOR", "tesery": "ACCESORIOSTESLA", "evdance": "EVEU20"}
 
 
 def con_precio(productos):
     """Regla de Vic: producto sin precio = no se publica. Si no se puede leer ningun precio, no se filtra (para no parar todo)."""
     ids = set()
-    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json"):
+    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json", "precios_temu.json"):
         try:
             ids |= set(json.loads((AQUI / nombre).read_text(encoding="utf-8")))
         except Exception:
@@ -103,7 +103,7 @@ def lista_tienda(productos, tienda):
     los de precio igual o superior a la mediana de la tienda (barajados, semilla 2027): los caros dan mas comision
     y salen el doble. IDENTICA en publicar_siguiente.py, publicar_facebook.py y publicar_instagram.py."""
     precios = {}
-    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json"):
+    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json", "precios_temu.json"):
         try:
             precios.update(json.loads((AQUI / nombre).read_text(encoding="utf-8")))
         except Exception:
@@ -160,7 +160,7 @@ def _final(c, tienda):
 
 def datos_precio(p):
     """Precio de un producto: {'tienda','p','final','dto','desde','f'} o None. Fuente: precios*.json (los actualiza el workflow Actualizar precios)."""
-    d = _precios_de(("precios.json", "precios_tesery.json", "precios_aliexpress.json")).get(p["asin"])
+    d = _precios_de(("precios.json", "precios_tesery.json", "precios_aliexpress.json", "precios_temu.json")).get(p["asin"])
     if not d:
         return None
     t = tienda_de(p)
@@ -275,6 +275,8 @@ def nota_tienda(t):
         return "🚚 Tienda de la UE: mira el envío a España en la ficha antes de pagar."
     if t == "aliexpress":
         return "🚚 Revisa la variante y el envío en la ficha."
+    if t == "temu":
+        return "🚚 Revisa la variante y el envío en la ficha."
     return ""
 
 
@@ -383,7 +385,7 @@ def enviar(token, chat, texto, url, boton="🛒 Comprar en Amazon", imagen=None)
 
 
 def imagen_de(asin):
-    for nombre in ("imagenes_ig.json", "imagenes_tesery.json", "imagenes_aliexpress.json"):
+    for nombre in ("imagenes_ig.json", "imagenes_tesery.json", "imagenes_aliexpress.json", "imagenes_temu.json"):
         try:
             u = json.loads((AQUI / nombre).read_text(encoding="utf-8")).get(asin)
         except Exception:
@@ -433,7 +435,7 @@ def main():
         if os.environ.get(k):
             env[k] = os.environ[k]
     productos = json.loads((AQUI / "productos.json").read_text(encoding="utf-8"))
-    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_tesery.json", "productos_evdance.json", "productos_aliexpress.json"):  # otras tiendas de afiliado
+    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_tesery.json", "productos_evdance.json", "productos_aliexpress.json", "productos_temu.json"):  # otras tiendas de afiliado
         extra = AQUI / nombre
         if extra.exists():
             productos += json.loads(extra.read_text(encoding="utf-8"))

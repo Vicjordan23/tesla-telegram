@@ -30,9 +30,9 @@ AQUI = Path(__file__).resolve().parent
 TAG = "teslaaccesorios-21"
 CANAL = "https://t.me/teslaaccesorios"
 API = "https://graph.facebook.com/v21.0"
-TIENDAS = ("amazon", "jowua", "hansshow", "tesery", "evdance", "aliexpress")
+TIENDAS = ("amazon", "jowua", "hansshow", "tesery", "evdance", "aliexpress", "temu")
 # Turno de 134 franjas de 30 min: ciclo de 7 (Amazon, Jowua y Hansshow 2 veces cada una y Tesery 1: comision del 2 %) x19 y EVDANCE 1 sola (envio a Espana caro)
-TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow", "tesery", "aliexpress", "aliexpress") * 15 + ("evdance",)  # 136 franjas: ciclo de 9 (AliExpress 2 de 9, comision ~9 %) x15 y EVDANCE 1 vez
+TURNO = ("amazon", "jowua", "hansshow", "amazon", "jowua", "hansshow", "tesery", "aliexpress", "aliexpress", "temu") * 15 + ("evdance",)  # 151 franjas: ciclo de 9 (AliExpress 2 de 9, comision ~9 %) x15 y EVDANCE 1 vez
 
 
 def dentro_de_ventana(texto):
@@ -63,14 +63,14 @@ def tienda_de(p):
     return p.get("tienda", "amazon")
 
 
-DESCUENTOS = {"amazon": 0.0, "jowua": 0.05, "hansshow": 0.20, "tesery": 0.05, "evdance": 0.20, "aliexpress": 0.0}  # descuento de cada tienda con su codigo
+DESCUENTOS = {"amazon": 0.0, "jowua": 0.05, "hansshow": 0.20, "tesery": 0.05, "evdance": 0.20, "aliexpress": 0.0, "temu": 0.0}  # descuento de cada tienda con su codigo
 CODIGOS = {"jowua": "ACCESORIOSTESLA", "hansshow": "VICTOR", "tesery": "ACCESORIOSTESLA", "evdance": "EVEU20"}
 
 
 def con_precio(productos):
     """Regla de Vic: producto sin precio = no se publica. Si no se puede leer ningun precio, no se filtra (para no parar todo)."""
     ids = set()
-    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json"):
+    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json", "precios_temu.json"):
         try:
             ids |= set(json.loads((AQUI / nombre).read_text(encoding="utf-8")))
         except Exception:
@@ -86,7 +86,7 @@ def lista_tienda(productos, tienda):
     los de precio igual o superior a la mediana de la tienda (barajados, semilla 2027): los caros dan mas comision
     y salen el doble. IDENTICA en publicar_siguiente.py, publicar_facebook.py y publicar_instagram.py."""
     precios = {}
-    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json"):
+    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json", "precios_temu.json"):
         try:
             precios.update(json.loads((AQUI / nombre).read_text(encoding="utf-8")))
         except Exception:
@@ -111,7 +111,7 @@ def lista_tienda(productos, tienda):
 def linea_precio(p):
     """Precio FINAL (con el descuento de la tienda) a partir de precios.json (se actualiza cada semana). '' si no hay precio."""
     d = None
-    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json"):  # Tesery tiene su propio archivo de precios
+    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json", "precios_temu.json"):  # Tesery tiene su propio archivo de precios
         try:
             d = d or json.loads((AQUI / nombre).read_text(encoding="utf-8")).get(p["asin"])
         except Exception:
@@ -154,6 +154,8 @@ def construir(p):
         aviso = "🏷️ Con el código EVEU20 hasta 20 % de descuento en la tienda. Consulta el envío a España en la ficha.\n"
     elif tienda == "aliexpress":  # AliExpress (afiliados)
         aviso = "Enlace de afiliado de AliExpress: a ti no te cuesta nada más. Revisa la variante y el envío en la ficha.\n"
+    elif tienda == "temu":  # Temu (afiliados)
+        aviso = "Enlace de afiliado de Temu: a ti no te cuesta nada más. Revisa la variante y el envío en la ficha.\n"
     else:
         aviso = "Enlace de afiliado de Amazon: a ti no te cuesta nada más.\n"
     texto = (
@@ -172,7 +174,7 @@ def main():
         sys.stdout.reconfigure(encoding="utf-8")
     args = set(sys.argv[1:])
     productos = json.loads((AQUI / "productos.json").read_text(encoding="utf-8"))
-    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_tesery.json", "productos_evdance.json", "productos_aliexpress.json"):  # otras tiendas de afiliado
+    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_tesery.json", "productos_evdance.json", "productos_aliexpress.json", "productos_temu.json"):  # otras tiendas de afiliado
         extra = AQUI / nombre
         if extra.exists():
             productos += json.loads(extra.read_text(encoding="utf-8"))
@@ -191,7 +193,7 @@ def main():
     if not pagina or not token:
         sys.exit("Faltan FB_PAGE_ID o FB_PAGE_TOKEN")
     imagenes = {}
-    for nombre in ("imagenes_ig.json", "imagenes_tesery.json", "imagenes_aliexpress.json"):
+    for nombre in ("imagenes_ig.json", "imagenes_tesery.json", "imagenes_aliexpress.json", "imagenes_temu.json"):
         try:
             imagenes.update(json.loads((AQUI / nombre).read_text(encoding="utf-8")))
         except Exception:
