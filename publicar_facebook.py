@@ -31,8 +31,7 @@ TAG = "teslafacebook-21"  # ID de seguimiento de Amazon propio de este canal (24
 CANAL = "https://t.me/teslaaccesorios"
 API = "https://graph.facebook.com/v21.0"
 TIENDAS = ("amazon", "jowua", "hansshow", "tesery", "aliexpress", "temu")
-# Turno de 134 franjas de 30 min: ciclo de 7 (Amazon, Jowua y Hansshow 2 veces cada una y Tesery 1: comision del 2 %) x19
-TURNO = ("amazon", "aliexpress", "jowua", "hansshow", "aliexpress", "amazon", "hansshow", "aliexpress", "jowua", "temu", "amazon", "aliexpress", "jowua", "hansshow", "aliexpress", "amazon", "hansshow", "aliexpress", "jowua", "tesery") * 7  # 140 franjas, ciclo de 20: AliExpress 6 (~9 %), Amazon/Jowua/Hansshow 4, Temu 1, Tesery 1 (2 %). 24/11: mas peso a comision alta
+TURNO = ("amazon", "amazon", "aliexpress", "aliexpress", "amazon", "amazon", "amazon", "hansshow", "amazon", "amazon", "jowua", "amazon", "aliexpress", "tesery", "amazon", "amazon", "hansshow", "temu", "amazon", "amazon") * 7  # 140 franjas, ciclo de 20: Amazon 12 (60 %), AliExpress 3, Hansshow 2, Jowua, Tesery y Temu 1. 26/11 (Vic): mayoria Amazon, es la unica tienda con ventas. Pares e impares equilibrados.
 
 
 def dentro_de_ventana(texto):
