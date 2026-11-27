@@ -87,6 +87,12 @@ TURNO = ("amazon", "amazon", "aliexpress", "aliexpress", "amazon", "amazon", "am
 BOTONES = {"amazon": "🛒 Comprar en Amazon", "jowua": "🛒 Comprar en Jowua", "hansshow": "🛒 Comprar en Hansshow", "tesery": "🛒 Comprar en Tesery", "aliexpress": "🛒 Comprar en AliExpress", "temu": "🛒 Comprar en Temu", "yeslak": "🛒 Comprar en Yeslak"}
 
 
+def boton_canal(tienda):
+    """Boton del canal de esa marca, para los posts del canal principal."""
+    nombre = {"aliexpress": "AliExpress"}.get(tienda, tienda.capitalize())
+    return {"text": f"📲 Canal solo de {nombre}", "url": f"https://t.me/Chollesla{nombre}"}
+
+
 def tienda_de(p):
     return p.get("tienda", "amazon")
 
@@ -376,12 +382,13 @@ PIE = f'🌐 Más chollos: <a href="{html.escape(marca.web_utm("telegram", "pie"
 LIMITE_TEXTO = 1024 - len(PIE_VISIBLE) - 2  # pie de foto de Telegram: 1024 caracteres con el pie
 
 
-def enviar(token, chat, texto, url, boton="🛒 Comprar en Amazon", imagen=None, extra=None):
+def enviar(token, chat, texto, url, boton="🛒 Comprar en Amazon", imagen=None, extra=None, canal=None):
     """Publica SIEMPRE con foto (sendPhoto). Si no hay foto o no se puede enviar, no publica nada (regla de Vic, 20/11/2026).
     La foto lleva el logo de Chollesla. Botones: Comprar (enlace de afiliado de SU tienda) y Mas chollos (chollesla.es) + Facebook.
     El pie con la web va en el texto de TODAS las publicaciones. 'texto' ya viene acortado por construir(max_len=LIMITE_TEXTO)."""
     teclado = {"inline_keyboard": [
         [{"text": boton, "url": url}],
+        *([[canal]] if canal else []),
         [{"text": "🔥 Más chollos en chollesla.es", "url": marca.web_utm("telegram", "boton")}],
         [extra or {"text": "📘 Síguenos en Facebook", "url": FACEBOOK}],
     ]}
@@ -525,7 +532,7 @@ def main():
 
     if not token or not chat:
         sys.exit("Falta TELEGRAM_BOT_TOKEN o TELEGRAM_CHAT_ID en .env")
-    res = enviar(token, chat, texto, url, BOTONES[tienda_de(p)], imagen)
+    res = enviar(token, chat, texto, url, BOTONES[tienda_de(p)], imagen, canal=boton_canal(tienda_de(p)))
     if res.get("ok"):
         if not sin_estado:
             f_estado.write_text(json.dumps(nuevo_estado), encoding="utf-8")
