@@ -36,14 +36,18 @@ TIENDAS_WEB = {  # tienda -> (base con idioma es-es para precios en EUR, base po
     "jowua": ("https://www.jowua-life.com/es-es", "https://www.jowua-life.com"),
     "hansshow": ("https://www.hansshow.com/es-es", "https://www.hansshow.com"),
     "tesery": ("https://www.tesery.com/es-es", "https://www.tesery.com"),
+    "yeslak": ("https://www.yeslak.com/es", None),  # EUR con la cookie localization=ES (ver get_json)
 }
-CATALOGOS = ("productos.json", "productos_jowua.json", "productos_hansshow.json", "productos_tesery.json")
+CATALOGOS = ("productos.json", "productos_jowua.json", "productos_hansshow.json", "productos_tesery.json", "productos_yeslak.json")
 
 
 def get_json(url, intentos=5):
     for i in range(intentos):
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
+            cab = {"User-Agent": UA, "Accept": "application/json"}
+            if "yeslak.com" in url:
+                cab["Cookie"] = "localization=ES"
+            req = urllib.request.Request(url, headers=cab)
             with urllib.request.urlopen(req, timeout=40) as r:
                 return json.loads(r.read().decode("utf-8"))
         except urllib.error.HTTPError as e:
@@ -109,6 +113,8 @@ def handle_de(p):
         return p["asin"][len("HANSSHOW-"):]
     if t == "tesery":
         return p["asin"][len("TESERY-"):]
+    if t == "yeslak":
+        return p["asin"][len("YESLAK-"):]
     if t == "jowua":
         m = re.search(r"/products/([^?/]+)", p.get("url_larga") or p.get("url") or "")
         return m.group(1) if m else None
@@ -173,6 +179,8 @@ def main():
 
     precios = json.loads((AQUI / "precios.json").read_text(encoding="utf-8"))
     precios_t = json.loads((AQUI / "precios_tesery.json").read_text(encoding="utf-8")) if (AQUI / "precios_tesery.json").exists() else {}
+    precios_y = json.loads((AQUI / "precios_yeslak.json").read_text(encoding="utf-8")) if (AQUI / "precios_yeslak.json").exists() else {}
+    aparte = {"tesery": precios_t, "yeslak": precios_y}  # tiendas con archivo de precios propio
     cambios, fallos = [], []
     resumen = []
 
@@ -191,7 +199,7 @@ def main():
             print(f"  ERROR leyendo {tienda}: {type(e).__name__} {e}; se dejan sus precios como estaban")
             resumen.append((tienda, 0, len(lista), len(lista)))
             continue
-        destino = precios_t if tienda == "tesery" else precios
+        destino = aparte.get(tienda, precios)
         ok = 0
         for p in lista:
             r = tabla.get(clave(p)) if clave(p) else None
@@ -219,7 +227,7 @@ def main():
     for a in fallos[:15]:
         print("   sin actualizar:", a)
     activos_ids = {p["asin"] for p in activos}
-    sin_nada = [a for a in activos_ids if a not in precios and a not in precios_t and (not solo)]
+    sin_nada = [a for a in activos_ids if a not in precios and a not in precios_t and a not in precios_y and (not solo)]
     print(f"Activos sin ningun precio (los publicadores los saltan): {len(sin_nada)}")
 
     # Regla de Vic: producto sin precio = no se publica. Si una tienda se leyo bien pero un producto lleva mas de
@@ -232,7 +240,7 @@ def main():
         t = p.get("tienda", "amazon")
         if t not in leidas:
             continue
-        destino = precios_t if t == "tesery" else precios
+        destino = aparte.get(t, precios)
         d = destino.get(p["asin"])
         if d and d["f"] < limite:
             caducados.append(p["asin"])
@@ -247,7 +255,8 @@ def main():
         return
     (AQUI / "precios.json").write_text(json.dumps(precios, ensure_ascii=False), encoding="utf-8", newline="\n")
     (AQUI / "precios_tesery.json").write_text(json.dumps(precios_t, ensure_ascii=False), encoding="utf-8", newline="\n")
-    print("precios.json y precios_tesery.json escritos.")
+    (AQUI / "precios_yeslak.json").write_text(json.dumps(precios_y, ensure_ascii=False), encoding="utf-8", newline="\n")
+    print("precios.json, precios_tesery.json y precios_yeslak.json escritos.")
 
 
 if __name__ == "__main__":

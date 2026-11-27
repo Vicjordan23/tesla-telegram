@@ -29,11 +29,23 @@ from pathlib import Path
 AQUI = Path(__file__).resolve().parent
 TAG = "teslatelegram-21"  # ID de seguimiento de Amazon propio de este canal (24/11/2026): sus clics y ventas salen por separado en el informe de Afiliados
 FACEBOOK = "https://www.facebook.com/profile.php?id=61596316649956"
+CANAL_PRINCIPAL = "https://t.me/teslaaccesorios"
+# Un canal por marca (27/11/2026, Vic): cada 30 min publica un producto SOLO de su tienda. El bot debe ser administrador.
+# Se usa el ID numerico (-100...), que no cambia aunque se cambie el nombre publico (t.me/Chollesla<Marca>).
+CANALES = {
+    "amazon": "-1005606869684",      # @CholleslaAmazon
+    "aliexpress": "-1005891680293",  # @CholleslaAliExpress
+    "hansshow": "-1005685744788",    # @CholleslaHansshow
+    "jowua": "-1005889712220",       # @CholleslaJowua
+    "tesery": "-1005951115171",      # @CholleslaTesery
+    "temu": "-1005798977552",        # @CholleslaTemu
+    "yeslak": "-1005708952251",      # @CholleslaYeslak
+}
 AVISO = (
     "🔥 <b>CHOLLESLA: los chollos para tu Tesla</b> 🔥\n\n"
     "⚡ Un accesorio nuevo cada 30 minutos para Model 3 y Model Y, con el precio final ya rebajado.\n"
-    "🏪 Amazon.es, AliExpress, Temu, Jowua, Hansshow y Tesery, todo en un sitio.\n"
-    "🏷️ Códigos de descuento: ACCESORIOSTESLA (Jowua y Tesery) y VICTOR (Hansshow).\n\n"
+    "🏪 Amazon.es, AliExpress, Temu, Jowua, Hansshow, Tesery y Yeslak, todo en un sitio.\n"
+    "🏷️ Códigos de descuento: ACCESORIOSTESLA (Jowua y Tesery) VICTOR (Hansshow) y VICTORMARTINJUA (Yeslak).\n\n"
     "👉 <b>Mira TODOS los chollos, busca por modelo, guarda los tuyos y crea alertas gratis:</b>\n"
     f"🌐 {marca.web_utm('telegram', 'aviso')}\n\n"
     "<i>Enlaces de afiliado. En calidad de Afiliado de Amazon, obtengo ingresos por las compras adscritas "
@@ -70,23 +82,23 @@ def url_producto(asin):
     return f"https://www.amazon.es/dp/{asin}?tag={TAG}"
 
 
-TIENDAS = ("amazon", "jowua", "hansshow", "tesery", "aliexpress", "temu")
-TURNO = ("amazon", "amazon", "aliexpress", "aliexpress", "amazon", "amazon", "amazon", "hansshow", "amazon", "amazon", "jowua", "amazon", "aliexpress", "tesery", "amazon", "amazon", "hansshow", "temu", "amazon", "amazon") * 7  # 140 franjas, ciclo de 20: Amazon 12 (60 %), AliExpress 3, Hansshow 2, Jowua, Tesery y Temu 1. 26/11 (Vic): mayoria Amazon, es la unica tienda con ventas. Pares e impares equilibrados.
-BOTONES = {"amazon": "🛒 Comprar en Amazon", "jowua": "🛒 Comprar en Jowua", "hansshow": "🛒 Comprar en Hansshow", "tesery": "🛒 Comprar en Tesery", "aliexpress": "🛒 Comprar en AliExpress", "temu": "🛒 Comprar en Temu"}
+TIENDAS = ("amazon", "jowua", "hansshow", "tesery", "aliexpress", "temu", "yeslak")
+TURNO = ("amazon", "amazon", "aliexpress", "aliexpress", "amazon", "amazon", "amazon", "hansshow", "amazon", "amazon", "jowua", "amazon", "yeslak", "tesery", "amazon", "amazon", "hansshow", "temu", "amazon", "amazon") * 7  # 140 franjas, ciclo de 20: Amazon 12 (60 %), AliExpress y Hansshow 2, Jowua, Tesery, Temu y Yeslak 1. 26/11 (Vic): mayoria Amazon. 27/11: entra Yeslak.
+BOTONES = {"amazon": "🛒 Comprar en Amazon", "jowua": "🛒 Comprar en Jowua", "hansshow": "🛒 Comprar en Hansshow", "tesery": "🛒 Comprar en Tesery", "aliexpress": "🛒 Comprar en AliExpress", "temu": "🛒 Comprar en Temu", "yeslak": "🛒 Comprar en Yeslak"}
 
 
 def tienda_de(p):
     return p.get("tienda", "amazon")
 
 
-DESCUENTOS = {"amazon": 0.0, "jowua": 0.05, "hansshow": 0.20, "tesery": 0.05, "aliexpress": 0.0, "temu": 0.0}  # descuento de cada tienda con su codigo
-CODIGOS = {"jowua": "ACCESORIOSTESLA", "hansshow": "VICTOR", "tesery": "ACCESORIOSTESLA"}
+DESCUENTOS = {"amazon": 0.0, "jowua": 0.05, "hansshow": 0.20, "tesery": 0.05, "aliexpress": 0.0, "temu": 0.0, "yeslak": 0.15}  # descuento de cada tienda con su codigo
+CODIGOS = {"jowua": "ACCESORIOSTESLA", "hansshow": "VICTOR", "tesery": "ACCESORIOSTESLA", "yeslak": "VICTORMARTINJUA"}
 
 
 def con_precio(productos):
     """Regla de Vic: producto sin precio = no se publica. Si no se puede leer ningun precio, no se filtra (para no parar todo)."""
     ids = set()
-    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json", "precios_temu.json"):
+    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json", "precios_temu.json", "precios_yeslak.json"):
         try:
             ids |= set(json.loads((AQUI / nombre).read_text(encoding="utf-8")))
         except Exception:
@@ -102,7 +114,7 @@ def lista_tienda(productos, tienda):
     los de precio igual o superior a la mediana de la tienda (barajados, semilla 2027): los caros dan mas comision
     y salen el doble. IDENTICA en publicar_siguiente.py, publicar_facebook.py y publicar_instagram.py."""
     precios = {}
-    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json", "precios_temu.json"):
+    for nombre in ("precios.json", "precios_tesery.json", "precios_aliexpress.json", "precios_temu.json", "precios_yeslak.json"):
         try:
             precios.update(json.loads((AQUI / nombre).read_text(encoding="utf-8")))
         except Exception:
@@ -159,7 +171,7 @@ def _final(c, tienda):
 
 def datos_precio(p):
     """Precio de un producto: {'tienda','p','final','dto','desde','f'} o None. Fuente: precios*.json (los actualiza el workflow Actualizar precios)."""
-    d = _precios_de(("precios.json", "precios_tesery.json", "precios_aliexpress.json", "precios_temu.json")).get(p["asin"])
+    d = _precios_de(("precios.json", "precios_tesery.json", "precios_aliexpress.json", "precios_temu.json", "precios_yeslak.json")).get(p["asin"])
     if not d:
         return None
     t = tienda_de(p)
@@ -268,7 +280,7 @@ def bloque_precio(pr, baja):
 def nota_tienda(t):
     if t == "jowua":
         return "🟡 Con este enlace el 5 % se aplica solo."
-    if t in ("hansshow", "tesery"):
+    if t in ("hansshow", "tesery", "yeslak"):
         return "✍️ Pon el código al pagar."
     if t == "aliexpress":
         return "🚚 Revisa la variante y el envío en la ficha."
@@ -364,14 +376,14 @@ PIE = f'🌐 Más chollos: <a href="{html.escape(marca.web_utm("telegram", "pie"
 LIMITE_TEXTO = 1024 - len(PIE_VISIBLE) - 2  # pie de foto de Telegram: 1024 caracteres con el pie
 
 
-def enviar(token, chat, texto, url, boton="🛒 Comprar en Amazon", imagen=None):
+def enviar(token, chat, texto, url, boton="🛒 Comprar en Amazon", imagen=None, extra=None):
     """Publica SIEMPRE con foto (sendPhoto). Si no hay foto o no se puede enviar, no publica nada (regla de Vic, 20/11/2026).
     La foto lleva el logo de Chollesla. Botones: Comprar (enlace de afiliado de SU tienda) y Mas chollos (chollesla.es) + Facebook.
     El pie con la web va en el texto de TODAS las publicaciones. 'texto' ya viene acortado por construir(max_len=LIMITE_TEXTO)."""
     teclado = {"inline_keyboard": [
         [{"text": boton, "url": url}],
         [{"text": "🔥 Más chollos en chollesla.es", "url": marca.web_utm("telegram", "boton")}],
-        [{"text": "📘 Síguenos en Facebook", "url": FACEBOOK}],
+        [extra or {"text": "📘 Síguenos en Facebook", "url": FACEBOOK}],
     ]}
     if not imagen:  # solo el aviso fijo (--aviso) va sin foto
         return _telegram(token, "sendMessage", {"chat_id": chat, "text": texto, "parse_mode": "HTML", "reply_markup": teclado})
@@ -382,7 +394,7 @@ def enviar(token, chat, texto, url, boton="🛒 Comprar en Amazon", imagen=None)
 
 
 def imagen_de(asin):
-    for nombre in ("imagenes_ig.json", "imagenes_tesery.json", "imagenes_aliexpress.json", "imagenes_temu.json"):
+    for nombre in ("imagenes_ig.json", "imagenes_tesery.json", "imagenes_aliexpress.json", "imagenes_temu.json", "imagenes_yeslak.json"):
         try:
             u = json.loads((AQUI / nombre).read_text(encoding="utf-8")).get(asin)
         except Exception:
@@ -405,6 +417,42 @@ def siguiente_sin_estado(productos):
     lista = lista_tienda(productos, tienda)  # los caros (>= mediana de la tienda) salen el doble
     k = (franja // len(turno)) * turno.count(tienda) + turno[:pos].count(tienda)
     return lista[k % len(lista)]
+
+
+def de_canal(productos, tienda, franja=None):
+    """Producto de la franja para el canal de una marca: su propia lista (la misma rotacion de la tienda), desplazada
+    media vuelta para no coincidir con el canal principal. Solo productos con foto. None si no hay ninguno."""
+    franja = int(time.time() // 1800) if franja is None else franja
+    lista = [a for a in lista_tienda(productos, tienda) if imagen_de(a)]
+    return lista[(franja + len(lista) // 2) % len(lista)] if lista else None
+
+
+def publicar_canales(productos, token, prueba=False):
+    """Publica en cada canal de marca. Un fallo en uno no impide los demas; al final sale con error si alguno fallo."""
+    fallos = []
+    for tienda, chat in CANALES.items():
+        try:
+            asin = de_canal(productos, tienda)
+            nombre = f"canal {tienda}"
+            if not asin:
+                print(f"canal {tienda}: sin productos con foto")
+                continue
+            p = next(x for x in productos if x["asin"] == asin)
+            texto, url = construir(p, LIMITE_TEXTO)
+            if prueba:
+                print(f"== canal {tienda} {asin}\n{texto}\nBOTON -> {url}\n")
+                continue
+            res = enviar(token, chat, texto, url, BOTONES[tienda], imagen_de(asin),
+                         {"text": "📢 Canal principal: todas las marcas", "url": CANAL_PRINCIPAL})
+            if res.get("ok"):
+                print(f"{nombre}: publicado {asin}")
+            else:
+                fallos.append(f"{nombre}: {res.get('description')}")
+        except Exception as e:  # foto caida, red...: seguir con los demas canales
+            fallos.append(f"canal {tienda}: {type(e).__name__} {e}")
+        time.sleep(1)
+    if fallos:
+        sys.exit("Canales con error:\n" + "\n".join(fallos))
 
 
 def siguiente(productos):
@@ -432,7 +480,7 @@ def main():
         if os.environ.get(k):
             env[k] = os.environ[k]
     productos = json.loads((AQUI / "productos.json").read_text(encoding="utf-8"))
-    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_tesery.json", "productos_aliexpress.json", "productos_temu.json"):  # otras tiendas de afiliado
+    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_tesery.json", "productos_aliexpress.json", "productos_temu.json", "productos_yeslak.json"):  # otras tiendas de afiliado
         extra = AQUI / nombre
         if extra.exists():
             productos += json.loads(extra.read_text(encoding="utf-8"))
@@ -448,6 +496,12 @@ def main():
 
     if "--forzar" not in args and not dentro_de_ventana(env.get("VENTANA", "")):
         print("Fuera de la ventana horaria; no se publica.")
+        return
+
+    if "--canales" in args:
+        if "--prueba" not in args and not token:
+            sys.exit("Falta TELEGRAM_BOT_TOKEN")
+        publicar_canales(productos, token, "--prueba" in args)
         return
 
     sin_estado = bool(os.environ.get("GITHUB_ACTIONS"))

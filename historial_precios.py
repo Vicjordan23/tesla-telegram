@@ -16,7 +16,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 AQUI = Path(__file__).resolve().parent
-ARCHIVOS = ("precios.json", "precios_tesery.json", "precios_aliexpress.json")
+ARCHIVOS = ("precios.json", "precios_tesery.json", "precios_aliexpress.json", "precios_yeslak.json")
 SALIDA = "historial_precios.json"
 
 

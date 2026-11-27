@@ -21,7 +21,7 @@ def _corto(t, n=58):
 
 def elegir():
     productos = json.loads((ps.AQUI / "productos.json").read_text(encoding="utf-8"))
-    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_tesery.json", "productos_aliexpress.json", "productos_temu.json"):
+    for nombre in ("productos_jowua.json", "productos_hansshow.json", "productos_tesery.json", "productos_aliexpress.json", "productos_temu.json", "productos_yeslak.json"):
         f = ps.AQUI / nombre
         if f.exists():
             productos += json.loads(f.read_text(encoding="utf-8"))

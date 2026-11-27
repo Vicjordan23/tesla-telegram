@@ -11,7 +11,7 @@ on:
 jobs:
   publicar:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
       - name: Instalar Pillow (logo sobre la foto)
@@ -22,3 +22,8 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           PRODUCTO_FORZADO: ${{ inputs.producto }}
         run: python3 publicar_siguiente.py
+      - name: Publicar en los canales de cada marca
+        if: ${{ !cancelled() && !inputs.producto }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: python3 publicar_siguiente.py --canales
