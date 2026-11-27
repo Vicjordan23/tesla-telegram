@@ -359,11 +359,13 @@ def _telegram(token, metodo, cuerpo, cabecera="application/json", datos=None):
             return {"ok": False, "description": str(e)}
 
 
-def _subir_foto(token, chat, imagen, caption, teclado):
+def _subir_foto(token, chat, imagen, caption, teclado, silencio=False):
     """Descarga la foto, le pone el logo de Chollesla y la sube a Telegram."""
     foto = marca.con_logo(marca.descargar(imagen))
     borde = uuid.uuid4().hex
     campos = {"chat_id": chat, "caption": caption, "parse_mode": "HTML", "reply_markup": json.dumps(teclado)}
+    if silencio:  # canales de marca: sin sonido para no saturar a quien sigue toda la comunidad
+        campos["disable_notification"] = "true"
     crlf = b"\r\n"
     cuerpo = b""
     for k, v in campos.items():
@@ -383,7 +385,7 @@ PIE = f'🌐 Más chollos: <a href="{html.escape(marca.web_utm("telegram", "pie"
 LIMITE_TEXTO = 1024 - len(PIE_VISIBLE) - 2  # pie de foto de Telegram: 1024 caracteres con el pie
 
 
-def enviar(token, chat, texto, url, boton="🛒 Comprar en Amazon", imagen=None, extra=None, canal=None):
+def enviar(token, chat, texto, url, boton="🛒 Comprar en Amazon", imagen=None, extra=None, canal=None, silencio=False):
     """Publica SIEMPRE con foto (sendPhoto). Si no hay foto o no se puede enviar, no publica nada (regla de Vic, 20/11/2026).
     La foto lleva el logo de Chollesla. Botones: Comprar (enlace de afiliado de SU tienda) y Mas chollos (chollesla.es) + Facebook.
     El pie con la web va en el texto de TODAS las publicaciones. 'texto' ya viene acortado por construir(max_len=LIMITE_TEXTO)."""
@@ -398,7 +400,7 @@ def enviar(token, chat, texto, url, boton="🛒 Comprar en Amazon", imagen=None,
     caption = texto + "\n\n" + PIE  # construir() ya dejo el texto dentro de LIMITE_TEXTO (no recortar aqui: partiria las etiquetas HTML)
     if len(texto) + 2 + len(PIE_VISIBLE) > 1024:  # Telegram cuenta el texto visible, no el HTML del enlace del pie
         raise ValueError(f"Pie de foto de {len(texto) + 2 + len(PIE_VISIBLE)} caracteres (> 1024)")
-    return _subir_foto(token, chat, imagen, caption, teclado)
+    return _subir_foto(token, chat, imagen, caption, teclado, silencio)
 
 
 def imagen_de(asin):
@@ -453,7 +455,7 @@ def publicar_canales(productos, token, prueba=False):
                 print(f"== canal {tienda} {asin}\n{texto}\nBOTON -> {url}\n")
                 continue
             res = enviar(token, chat, texto, url, BOTONES[tienda], imagen_de(asin),
-                         {"text": "📢 Canal principal: todas las marcas", "url": CANAL_PRINCIPAL})
+                         {"text": "📢 Canal principal: todas las marcas", "url": CANAL_PRINCIPAL}, silencio=True)
             if res.get("ok"):
                 print(f"{nombre}: publicado {asin}")
             else:
