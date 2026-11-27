@@ -28,6 +28,7 @@ from pathlib import Path
 
 AQUI = Path(__file__).resolve().parent
 TAG = "teslatelegram-21"  # ID de seguimiento de Amazon propio de este canal (24/11/2026): sus clics y ventas salen por separado en el informe de Afiliados
+TAG_CANAL = "teslacanal-21"  # canal de Amazon (27/11/2026): sus ventas salen aparte de las del canal principal
 FACEBOOK = "https://www.facebook.com/profile.php?id=61596316649956"
 CANAL_PRINCIPAL = "https://t.me/teslaaccesorios"
 # Un canal por marca (27/11/2026, Vic): cada 30 min publica un producto SOLO de su tienda. El bot debe ser administrador.
@@ -446,6 +447,8 @@ def publicar_canales(productos, token, prueba=False):
                 continue
             p = next(x for x in productos if x["asin"] == asin)
             texto, url = construir(p, LIMITE_TEXTO)
+            if tienda == "amazon":
+                url = url.replace(f"tag={TAG}", f"tag={TAG_CANAL}")
             if prueba:
                 print(f"== canal {tienda} {asin}\n{texto}\nBOTON -> {url}\n")
                 continue
