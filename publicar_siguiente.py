@@ -34,7 +34,7 @@ CANAL_PRINCIPAL = "https://t.me/teslaaccesorios"
 # Un canal por marca (27/11/2026, Vic): cada 30 min publica un producto SOLO de su tienda. El bot debe ser administrador.
 # Se usa el ID numerico (-100...), que no cambia aunque se cambie el nombre publico (t.me/Chollesla<Marca>).
 CANALES = {
-    "amazon": "-1005606869684",      # @CholleslaAmazon
+    "amazon": "-1005606869684",      # @CholleslaAmzn (Amazon rechaza «amazon» en la direccion)
     "aliexpress": "-1005891680293",  # @CholleslaAliExpress
     "hansshow": "-1005685744788",    # @CholleslaHansshow
     "jowua": "-1005889712220",       # @CholleslaJowua
@@ -91,7 +91,8 @@ BOTONES = {"amazon": "🛒 Comprar en Amazon", "jowua": "🛒 Comprar en Jowua",
 def boton_canal(tienda):
     """Boton del canal de esa marca, para los posts del canal principal."""
     nombre = {"aliexpress": "AliExpress"}.get(tienda, tienda.capitalize())
-    return {"text": f"📲 Canal solo de {nombre}", "url": f"https://t.me/Chollesla{nombre}"}
+    usuario = "CholleslaAmzn" if tienda == "amazon" else f"Chollesla{nombre}"
+    return {"text": f"📲 Canal solo de {nombre}", "url": f"https://t.me/{usuario}"}
 
 
 def tienda_de(p):
