@@ -1,0 +1,19 @@
+name: Anunciar canales por tienda
+
+on:
+  workflow_dispatch:
+  push:
+    paths: [anuncio_canales.txt]
+
+jobs:
+  anunciar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -q pillow
+      - name: Publicar en el canal principal
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python3 anunciar_canales.py

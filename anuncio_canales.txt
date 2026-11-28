@@ -1,0 +1,2 @@
+Cambiar este archivo (o lanzar el workflow a mano) vuelve a publicar el anuncio de los canales por tienda.
+28/11/2026: primer anuncio.
